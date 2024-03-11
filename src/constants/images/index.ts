@@ -1,4 +1,4 @@
-import logo from './logo.jpg';
+import logo from './logo.png';
 import logo_bk from './logo_bk.jpg';
 import loginBackground from './login_background.png';
 import noResult from './noResult.png';

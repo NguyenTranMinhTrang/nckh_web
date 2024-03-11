@@ -1,9 +1,18 @@
 import React from "react";
+import SideBar from "../components/SideBar";
 
-const Home = () => {
+interface IProps {
+    children: JSX.Element;
+}
+
+const Home = (props: IProps) => {
     return (
-        <div>
-            Home
+        <div className="h-screen flex flex-row">
+            <SideBar />
+            {/* Content */}
+            <div className="flex flex-1">
+                {props?.children}
+            </div>
         </div>
     )
 }

@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/reducers/userSlice";
 import { useNavigate } from "react-router-dom";
+import { STORAGE_KEY } from "../constants/AppConstant";
 
 interface IFormValues {
     userName: string;
@@ -45,7 +46,9 @@ const Login = () => {
             console.log('response: ', response);
             const userData: IUserData = response?.data;
             dispatch(setUser(userData));
-            navigate('/home/report', { replace: true });
+            await localStorage.setItem(STORAGE_KEY.USER_DATA, JSON.stringify(userData));
+            navigate('/report', { replace: true });
+
         } else {
             toast.error(response?.message || 'Thao tác thất bại, xin vui lòng thử lại!');
         }

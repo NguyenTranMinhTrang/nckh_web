@@ -3,8 +3,8 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import RequireAuth from "./pages/RequireAuth";
 import { ROUTE_RIGHT } from "./constants/AppConstant";
-import Home from "./pages/Home";
 import UnAuthorized from "./pages/UnAuthorized";
+import Report from "./pages/Report";
 
 const AppNavigation = () => {
     return (
@@ -14,7 +14,7 @@ const AppNavigation = () => {
 
             {/* Private path */}
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
-                <Route path="/home/report" element={<Home />} />
+                <Route path="/report" element={<Report />} />
             </Route>
         </Routes>
     )

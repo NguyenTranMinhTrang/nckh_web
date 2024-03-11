@@ -16,3 +16,12 @@ export interface IUserData {
     userId: number;
     userName: string;
 }
+
+export interface IReport {
+    description: string;
+    image: string;
+    report_id: number;
+    report_time: string;
+    status: string;
+    title: string;
+}

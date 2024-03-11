@@ -22,10 +22,15 @@ const RequireAuth = (props: IProps) => {
         checkLogin();
     }, []);
 
+    console.log('userData: ', userData);
+
+
     const checkLogin = async () => {
         try {
             if (!userData) {
                 const response = await localStorage.getItem(STORAGE_KEY.USER_DATA);
+                console.log('response userData: ', response);
+
                 if (response) {
                     const user = JSON.parse(response);
                     dispatch(setUser(user));
