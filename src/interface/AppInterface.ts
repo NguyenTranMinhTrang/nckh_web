@@ -17,6 +17,8 @@ export interface IUserData {
     userName: string;
 }
 
+export type IReportStatus = "DENIED";
+
 export interface IReport {
     description: string;
     image: string;
@@ -24,4 +26,8 @@ export interface IReport {
     report_time: string;
     status: string;
     title: string;
+    phone_number: string;
+    user_name: string;
+    user_report_id: number;
+    action: IReportStatus;
 }

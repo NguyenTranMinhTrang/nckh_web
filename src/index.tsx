@@ -5,6 +5,14 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 
+if (process.env.NODE_ENV === 'development') {
+  //@ts-ignore
+  import("disable-react-error-overlay").then(() => {
+    const iframe = document.querySelector('iframe');
+    if (iframe) iframe.remove();
+  });
+}
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );

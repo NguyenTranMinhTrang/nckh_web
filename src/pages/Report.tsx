@@ -4,10 +4,13 @@ import Loading from "../components/Loading";
 import { useImmer } from "use-immer";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
 import { GET_REPORT } from "../config/AppConfig";
-import { IReport } from "../interface/AppInterface";
+import { IReport, IReportStatus } from "../interface/AppInterface";
 import TableData from "../components/TableData";
 import { EyeOutlined } from "@ant-design/icons";
 import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
+import { STATUS_REPORT } from "../constants/AppConstant";
+import { styles } from "../styles/style";
+import ModalDetailReport from "../components/ModalDetailReport";
 
 interface IState {
     loading: boolean;
@@ -44,9 +47,9 @@ const Report = () => {
         console.log('item: ', item);
         refModal?.current?.onOpen(
             'Chi tiết báo cáo',
-            <div className="h-60">
-
-            </div>
+            <ModalDetailReport
+                item={item}
+            />
         )
     }
 
@@ -58,6 +61,19 @@ const Report = () => {
                     onClick={(e) => onDetail(e, row)}>
                     <EyeOutlined style={{ color: "white" }} />
                 </button>
+            </div>
+        )
+    }
+
+    const renderStatus = (row: IReportStatus) => {
+        const status = STATUS_REPORT?.[row];
+        console.log('status: ', status);
+
+        return (
+            <div className='flex flex-row items-center justify-start'>
+                <div className={`w-28 h-11 flex items-center justify-center rounded-md border-double border-4 border-[${status.color}]`}>
+                    <span className={`${styles.textNoramal} text-[${status.color}]`}>{status.title}</span>
+                </div>
             </div>
         )
     }
@@ -82,6 +98,13 @@ const Report = () => {
                         title: 'Mô tả',
                         dataIndex: 'description',
                         key: 'description',
+                    },
+                    {
+                        title: 'Trạng thái',
+                        dataIndex: 'action',
+                        key: 'action',
+                        width: '15%',
+                        render: renderStatus
                     },
                     {
                         title: 'Thời gian',
