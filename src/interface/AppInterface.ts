@@ -31,3 +31,9 @@ export interface IReport {
     user_report_id: number;
     action: IReportStatus;
 }
+
+export interface IStatusReport {
+    lable: string;
+    value: string;
+    color: string;
+}

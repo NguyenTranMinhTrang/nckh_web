@@ -15,21 +15,30 @@ const useAxiosPrivate = () => {
     const userData = useAppSelector(st => st.user.auth);
 
     const handleOutRefresh = () => {
+        console.log('Come here');
+
         localStorage.removeItem(STORAGE_KEY.USER_DATA);
         toast.error('Đã hết phiên đăng nhập, vui lòng đăng nhập lại !');
         navigate('/login');
     }
 
     const onRefresh = async () => {
-        const response: IResponse = await axios.post(REFRESH_TOKEN, {}, {
-            headers: {
-                Authorization: `${userData?.accessToken}`,
-            }
-        });
+        try {
+            const response: IResponse = await axios.post(REFRESH_TOKEN, {}, {
+                headers: {
+                    Authorization: `${userData?.accessToken}`,
+                }
+            });
 
-        if (response?.resultCode === 0) {
-            return response?.data?.newToken;
-        } else {
+            console.log('response onRefresh: ', response);
+
+
+            if (response?.resultCode === 0) {
+                return response?.data?.newToken;
+            } else {
+                return '';
+            }
+        } catch (error) {
             return '';
         }
     }

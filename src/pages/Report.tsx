@@ -49,6 +49,7 @@ const Report = () => {
             'Chi tiết báo cáo',
             <ModalDetailReport
                 item={item}
+                onRefresh={loadData}
             />
         )
     }
@@ -67,7 +68,6 @@ const Report = () => {
 
     const renderStatus = (row: IReportStatus) => {
         const status = STATUS_REPORT?.[row];
-        console.log('status: ', status);
 
         return (
             <div className='flex flex-row items-center justify-start'>
