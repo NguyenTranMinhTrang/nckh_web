@@ -11,6 +11,7 @@ import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
 import { STATUS_REPORT } from "../constants/AppConstant";
 import { styles } from "../styles/style";
 import ModalDetailReport from "../components/ModalDetailReport";
+import { toast } from "react-toastify";
 
 interface IState {
     loading: boolean;
@@ -35,21 +36,33 @@ const Report = () => {
         formData.append('reportId', '');
         formData.append('status', '');
         const response = await axios.post(GET_REPORT, formData);
-        console.log('response: ', response);
-        setState(draft => {
-            draft.loading = false;
-            draft.data = response?.data || [];
-        })
+        console.log('response loadData: ', response);
+        if (response?.data && response?.data?.resultCode === 0) {
+            setState(draft => {
+                draft.loading = false;
+                draft.data = response?.data?.data || [];
+            })
+        } else {
+            setState(draft => {
+                draft.loading = false;
+                draft.data = [];
+            })
+            toast.error("Thao tác thất bại! Vui lòng thử lại !");
+        }
+    }
+
+    const onClose = () => {
+        refModal?.current?.onClose();
     }
 
     const onDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: IReport) => {
         e.preventDefault();
-        console.log('item: ', item);
         refModal?.current?.onOpen(
             'Chi tiết báo cáo',
             <ModalDetailReport
                 item={item}
                 onRefresh={loadData}
+                onClose={onClose}
             />
         )
     }
@@ -71,7 +84,7 @@ const Report = () => {
 
         return (
             <div className='flex flex-row items-center justify-start'>
-                <div className={`w-28 h-11 flex items-center justify-center rounded-md border-double border-4 border-[${status.color}]`}>
+                <div className={`w-28 h-11 flex items-center justify-center rounded-md border-double border-${status.color} `}>
                     <span className={`${styles.textNoramal} text-[${status.color}]`}>{status.title}</span>
                 </div>
             </div>
@@ -79,7 +92,6 @@ const Report = () => {
     }
 
     const renderBody = () => {
-
         if (state.loading) {
             return (
                 <Loading showProps={true} style="bg-transparent" />

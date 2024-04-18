@@ -1,19 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import './App.css';
 import AppNavigation from './AppNavigation';
 import { Provider } from 'react-redux';
 import store from './redux/store';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { setKey } from 'react-geocode';
-import { KEY_API_GOOGLE_MAP } from './constants/AppConstant';
 
 const App = () => {
-
-  useEffect(() => {
-    setKey(KEY_API_GOOGLE_MAP);
-  }, []);
-
   return (
     <Provider store={store}>
       <AppNavigation />

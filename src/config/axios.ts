@@ -3,14 +3,15 @@ import { DOMAIN } from "./AppConfig";
 
 axios.defaults.withCredentials = true;
 
-axios.interceptors.response.use((response) => {
-    if (response && response.data) {
-        return response.data;
-    }
-    return response;
-}, (error) => {
-    throw error;
-});
+// axios.interceptors.response.use((response) => {
+//     console.log('response interceptors: ', response);
+//     if (response && response.data) {
+//         return response.data;
+//     }
+//     return response;
+// }, (error) => {
+//     throw error;
+// });
 
 export default axios.create({
     baseURL: DOMAIN,
@@ -20,8 +21,6 @@ export default axios.create({
     },
 
 });
-
-
 
 export const axiosPrivate = axios.create({
     baseURL: DOMAIN,

@@ -30,6 +30,8 @@ export interface IReport {
     user_name: string;
     user_report_id: number;
     action: IReportStatus;
+    lat: number;
+    lng: number;
 }
 
 export interface IStatusReport {

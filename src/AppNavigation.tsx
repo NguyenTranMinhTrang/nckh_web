@@ -6,6 +6,7 @@ import { ROUTE_RIGHT } from "./constants/AppConstant";
 import UnAuthorized from "./pages/UnAuthorized";
 import Report from "./pages/Report";
 import HomePage from "./pages/HomePage";
+import Animal from "./pages/Animal";
 
 const AppNavigation = () => {
     return (
@@ -21,6 +22,10 @@ const AppNavigation = () => {
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
                 <Route path="/report" element={<Report />} />
+            </Route>
+
+            <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
+                <Route path="/animals" element={<Animal />} />
             </Route>
         </Routes>
     )

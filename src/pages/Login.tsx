@@ -42,9 +42,9 @@ const Login = () => {
         const response: IResponse = await axios.post(LOGIN, formData);
         console.log('response: ', response);
 
-        if (response?.resultCode == 0) {
+        if (response?.data && response?.data?.resultCode === 0) {
             console.log('response: ', response);
-            const userData: IUserData = response?.data;
+            const userData: IUserData = response?.data?.data;
             dispatch(setUser(userData));
             await localStorage.setItem(STORAGE_KEY.USER_DATA, JSON.stringify(userData));
             navigate('/report', { replace: true });

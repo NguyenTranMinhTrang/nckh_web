@@ -2,7 +2,7 @@ export const COLOR_PRIMARY = '#45d279';
 export const COLOR_ERROR = '#EF4444';
 export const COLOR_BASIC = '#3D75FA';
 
-export const KEY_API_GOOGLE_MAP = 'AIzaSyCmhOtOrEHMV-QYanl5Q24wTJdSW_dB-Qs';
+export const KEY_API_GOOGLE_MAP = 'AIzaSyDdyfzO1qNJhud6RAfpQ8wCqVqIm9qoC80';
 
 export const STORAGE_KEY = {
     USER_DATA: 'userDate',
@@ -16,15 +16,15 @@ export const ROUTE_RIGHT = {
 export const STATUS_REPORT = {
     DENIED: {
         title: 'Từ chối',
-        color: COLOR_ERROR
+        color: 'error'
     },
     CREATE: {
         title: 'Mới',
-        color: COLOR_BASIC
+        color: 'basic'
     },
     ACCEPT: {
         title: 'Chấp nhận',
-        color: COLOR_PRIMARY
+        color: 'primary'
     }
 
 }
@@ -33,16 +33,16 @@ export const STATUS_REPORT_OPTIONS = [
     {
         lable: 'Từ chối',
         value: 'DENIED',
-        color: COLOR_ERROR
+        color: 'error'
     },
     {
         lable: 'Mới',
         value: 'CREATE',
-        color: COLOR_BASIC
+        color: 'basic'
     },
     {
         lable: 'Chấp nhận',
         value: 'ACCEPT',
-        color: COLOR_PRIMARY
+        color: 'primary'
     },
 ]
