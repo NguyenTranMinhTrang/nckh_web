@@ -39,3 +39,16 @@ export interface IStatusReport {
     value: string;
     color: string;
 }
+
+export interface IAnimal {
+    animal_infor: string;
+    animal_red_list_id: number;
+    animal_type: string;
+    conservation_status: string;
+    en_name: string;
+    images: string[];
+    predict_id: number;
+    sc_name: string;
+    status: string;
+    vn_name: string;
+}

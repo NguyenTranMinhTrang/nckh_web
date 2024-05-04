@@ -81,10 +81,9 @@ const Report = () => {
 
     const renderStatus = (row: IReportStatus) => {
         const status = STATUS_REPORT?.[row];
-
         return (
             <div className='flex flex-row items-center justify-start'>
-                <div className={`w-28 h-11 flex items-center justify-center rounded-md border-double border-${status.color} `}>
+                <div className={`w-28 h-11 flex items-center justify-center rounded-md border border-[${status.color}] `}>
                     <span className={`${styles.textNoramal} text-[${status.color}]`}>{status.title}</span>
                 </div>
             </div>

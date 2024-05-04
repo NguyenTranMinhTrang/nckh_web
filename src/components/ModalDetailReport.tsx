@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 import { IReport, IResponse, IStatusReport } from "../interface/AppInterface";
 import { styles } from "../styles/style";
-import { KEY_API_GOOGLE_MAP, STATUS_REPORT_OPTIONS } from "../constants/AppConstant";
+import { COLOR_ERROR, COLOR_PRIMARY, KEY_API_GOOGLE_MAP, STATUS_REPORT_OPTIONS } from "../constants/AppConstant";
 import IDDropdown from "./IDDropdown";
 import Loading, { IRefLoading } from "./Loading";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
@@ -11,6 +11,7 @@ import axiosCustom from 'axios';
 //@ts-expect-error: kkk
 import GoogleMapReact from 'google-map-react';
 import { useImmer } from "use-immer";
+import { CreditCardOutlined, PhoneOutlined } from "@ant-design/icons";
 
 interface IProps {
     item: IReport;
@@ -46,10 +47,17 @@ const ModalDetailReport = (props: IProps) => {
             withCredentials: false,
         });
 
+        console.log('getAddress: ', response);
+
         if (response?.data?.status === 'OK') {
             setState(draft => {
                 draft.loading = false;
                 draft.address = response?.data?.results[0]?.formatted_address;
+            })
+        } else {
+            setState(draft => {
+                draft.loading = false;
+                draft.address = '';
             })
         }
     }
@@ -102,7 +110,13 @@ const ModalDetailReport = (props: IProps) => {
             </div>
 
             <div className="my-2">
-                <span className={styles.textNoramal}>{item.description}</span>
+                <CreditCardOutlined style={{ color: COLOR_PRIMARY }} />
+                <span className={styles.textNoramal}><span className="font-semibold"> Mô tả:</span> {item.description}</span>
+            </div>
+
+            <div className="my-2">
+                <PhoneOutlined style={{ color: COLOR_ERROR }} />
+                <span className={styles.textNoramal}> <span className="font-semibold">Số điện thoại:</span> {item.phone_number}</span>
             </div>
 
             <div className={styles.flexRow}>
