@@ -2,6 +2,7 @@ import React, { forwardRef, useImperativeHandle } from "react";
 
 interface IProps {
     type?: 'information' | 'basic';
+    onSave?: () => void;
 }
 
 export interface IRefModalBasic {
@@ -32,6 +33,10 @@ const ModalBasic = forwardRef<IRefModalBasic, IProps>((props, ref) => {
         }
     })
 
+    const onSave = () => {
+        props?.onSave?.();
+    }
+
 
     const renderFooter = () => {
         if (type === 'information') {
@@ -58,7 +63,7 @@ const ModalBasic = forwardRef<IRefModalBasic, IProps>((props, ref) => {
                 <button
                     className="bg-primary text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={onSave}
                 >
                     Lưu
                 </button>

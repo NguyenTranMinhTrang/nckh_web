@@ -6,3 +6,4 @@ export const REFRESH_TOKEN = '/user/expand';
 export const GET_REPORT = '/report/getReport';
 export const UPDATE_STATUS_REPORT = '/report/recordAction';
 export const GET_ANIMAL = '/redList/getAnimalRedList';
+export const GTE_ANIMAL_TYPE = '/admin/getAnimalType';

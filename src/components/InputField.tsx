@@ -70,7 +70,6 @@ const InputField = (props: IProps) => {
             {
                 renderInput()
             }
-
             {errors && errors[name] && <p className="text-[red] mt-1">* {errors[name].message}</p>}
         </div>
     );

@@ -8,7 +8,7 @@ interface IState {
     selected: null | Record<string, any>;
 }
 
-interface IProps {
+export interface IPropDropdown {
     keyValue: string;
     keyLabel: string;
     items: any[];
@@ -18,7 +18,7 @@ interface IProps {
     defaultValue?: string;
 }
 
-const IDDropdown = (props: IProps) => {
+const IDDropdown = (props: IPropDropdown) => {
     const { items, keyValue, defaultValue, keyLabel } = props;
     const [state, setState] = useImmer<IState>({
         items: [],
@@ -56,7 +56,9 @@ const IDDropdown = (props: IProps) => {
     const renderValue = () => {
         if (!state.selected) {
             return (
-                <div>Chọn ...</div>
+                <div className={`w-32 h-11 flex items-center justify-center rounded-md border-double border-4`}>
+                    <div>Chọn ...</div>
+                </div>
             )
         }
 
@@ -73,7 +75,9 @@ const IDDropdown = (props: IProps) => {
 
     const onSelect = (item: any) => {
         console.log('item: ', item);
-        const findItem = state?.items?.find(val => val?.key === item?.key);
+        const findItem = state?.items?.find(val => `${val?.key}` === `${item?.key}`);
+        console.log('findItem: ', findItem);
+
         if (findItem) {
             setState(draft => {
                 draft.selected = findItem;

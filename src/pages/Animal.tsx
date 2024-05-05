@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import Home from "./Home";
 import { useImmer } from "use-immer";
 import Loading from "../components/Loading";
@@ -7,6 +7,8 @@ import { GET_ANIMAL } from "../config/AppConfig";
 import { IAnimal } from "../interface/AppInterface";
 import TableData from "../components/TableData";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
+import ModalDetailAnimal, { IRefModalDetailAnimal } from "../components/ModalDetailAnimal";
 
 interface IState {
     loading: boolean;
@@ -19,6 +21,9 @@ const Animal = () => {
         loading: true,
         data: []
     })
+
+    const refModal = useRef<IRefModalBasic>(null);
+    const refModalAnimal = useRef<IRefModalDetailAnimal>(null);
 
     useEffect(() => {
         loadData();
@@ -39,9 +44,28 @@ const Animal = () => {
         }
     }
 
+    const onRefresh = () => {
+        loadData();
+    }
+
+    const onSave = () => {
+        console.log('Come here');
+
+        refModalAnimal?.current?.onSave();
+    }
+
     const onDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: IAnimal) => {
         e.preventDefault();
         console.log('item: ', item);
+        refModal?.current?.onOpen(
+            'Chi tiết',
+            <ModalDetailAnimal
+                ref={refModalAnimal}
+                id={item.animal_red_list_id}
+                onClose={() => refModal?.current?.onClose()}
+                onRefresh={onRefresh}
+            />
+        )
     }
 
     const renderActions = (row: IAnimal) => {
@@ -118,6 +142,7 @@ const Animal = () => {
                 <div className="mt-6 flex flex-1 relative overflow-y-scroll">
                     {renderBody()}
                 </div>
+                <ModalBasic onSave={onSave} ref={refModal} />
             </div>
         </Home>
     )

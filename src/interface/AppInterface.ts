@@ -52,3 +52,10 @@ export interface IAnimal {
     status: string;
     vn_name: string;
 }
+
+export interface IAnimalType {
+    animal_type_id: number;
+    description: string;
+    status: string;
+    type_name: string;
+}
