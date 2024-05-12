@@ -40,13 +40,22 @@ export interface IStatusReport {
     color: string;
 }
 
+export interface IAnimalImage {
+    description: string;
+    image_id: number;
+    image_local_path: string;
+    image_public_path: string;
+    image_type: string;
+    status: string;
+}
+
 export interface IAnimal {
     animal_infor: string;
     animal_red_list_id: number;
     animal_type: string;
     conservation_status: string;
     en_name: string;
-    images: string[];
+    images: IAnimalImage[];
     predict_id: number;
     sc_name: string;
     status: string;
@@ -58,4 +67,12 @@ export interface IAnimalType {
     description: string;
     status: string;
     type_name: string;
+}
+
+export interface IConversationStatus {
+    conservation_status_id: number;
+    description: string;
+    stand_name: string;
+    status: string;
+    status_name: string;
 }

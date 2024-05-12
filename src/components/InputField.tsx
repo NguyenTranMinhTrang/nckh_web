@@ -58,15 +58,23 @@ const InputField = (props: IProps) => {
                 })}
                 disabled={disabled}
                 type={type}
-                placeholder={`${title}...`}
+                placeholder={'Nhập ...'}
                 className="border-2 shadow appearance-none rounded-md w-full mt-3 py-2.5 px-3 font-poppins leading-tight focus:outline-none focus:border-primary"
             />
         )
     }
 
     return (
-        <div className={`mt-8 w-full ${style}`}>
-            <label className="text-[16px] font-poppins">{title}</label><br />
+        <div className={`w-full ${style}`}>
+            {
+                required ?
+                    <div className="flex flex-row items-center">
+                        <label className="text-[16px] font-poppins font-semibold">{title}</label>
+                        <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
+                    </div>
+                    :
+                    <label className="text-[16px] font-poppins font-semibold">{title}</label>
+            }
             {
                 renderInput()
             }

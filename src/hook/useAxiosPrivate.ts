@@ -42,8 +42,6 @@ const useAxiosPrivate = () => {
     // }
 
     useEffect(() => {
-        console.log('Come in useRequest: ', userData);
-
         const requestIntercept = axios.interceptors.request.use(
             config => {
                 if (!config.headers['Authorization']) {
@@ -55,7 +53,6 @@ const useAxiosPrivate = () => {
 
         const responseIntercept = axios.interceptors.response.use(
             (response) => {
-                console.log('response in interceptors: ', response);
                 return response;
             },
             async (error) => {
