@@ -7,6 +7,7 @@ import UnAuthorized from "./pages/UnAuthorized";
 import Report from "./pages/Report";
 import HomePage from "./pages/HomePage";
 import Animal from "./pages/Animal";
+import Contribute from "./pages/Contribute";
 
 const AppNavigation = () => {
     return (
@@ -26,6 +27,10 @@ const AppNavigation = () => {
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
                 <Route path="/animals" element={<Animal />} />
+            </Route>
+
+            <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
+                <Route path="/contribute" element={<Contribute />} />
             </Route>
         </Routes>
     )

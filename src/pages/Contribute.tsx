@@ -1,24 +1,22 @@
 import React, { useEffect, useRef } from "react";
-import Home from "./Home";
-import Loading from "../components/Loading";
-import { useImmer } from "use-immer";
-import { toast } from "react-toastify";
+import { IContribute } from "../interface/AppInterface";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
-import { GET_REPORT } from "../config/AppConfig";
-import { IReport, IReportStatus } from "../interface/AppInterface";
-import TableData from "../components/TableData";
-import { EyeOutlined } from "@ant-design/icons";
+import { useImmer } from "use-immer";
 import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
-import { STATUS_REPORT } from "../constants/AppConstant";
-import { styles } from "../styles/style";
-import ModalDetailReport from "../components/ModalDetailReport";
+import Home from "./Home";
+import TableData from "../components/TableData";
+import Loading from "../components/Loading";
+import { GET_CONTRIBUTE } from "../config/AppConfig";
+import { toast } from "react-toastify";
+import { EyeOutlined } from "@ant-design/icons";
+import ModalContribute from "../components/ModalContribute";
 
 interface IState {
     loading: boolean;
-    data: IReport[];
+    data: IContribute[];
 }
 
-const Report = () => {
+const Contribute = () => {
     const axios = useAxiosPrivate();
     const [state, setState] = useImmer<IState>({
         loading: true,
@@ -33,10 +31,8 @@ const Report = () => {
 
     const loadData = async () => {
         const formData = new FormData();
-        formData.append('reportId', '');
-        formData.append('status', '');
-        const response = await axios.post(GET_REPORT, formData);
-        console.log('response loadData: ', response);
+        formData.append('contributeId', '');
+        const response = await axios.post(GET_CONTRIBUTE, formData);
         if (response?.data && response?.data?.resultCode === 0) {
             setState(draft => {
                 draft.loading = false;
@@ -55,19 +51,18 @@ const Report = () => {
         refModal?.current?.onClose();
     }
 
-    const onDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: IReport) => {
+    const onDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: IContribute) => {
         e.preventDefault();
         refModal?.current?.onOpen(
-            'Chi tiết báo cáo',
-            <ModalDetailReport
-                item={item}
-                onRefresh={loadData}
+            'Chi tiết đóng góp',
+            <ModalContribute
+                id={item.contribute_id}
                 onClose={onClose}
             />
         )
     }
 
-    const renderActions = (row: IReport) => {
+    const renderActions = (row: IContribute) => {
         return (
             <div className='flex flex-row items-center justify-center'>
                 <button
@@ -75,17 +70,6 @@ const Report = () => {
                     onClick={(e) => onDetail(e, row)}>
                     <EyeOutlined style={{ color: "white" }} />
                 </button>
-            </div>
-        )
-    }
-
-    const renderStatus = (row: IReportStatus) => {
-        const status = STATUS_REPORT?.[row];
-        return (
-            <div className='flex flex-row items-center justify-start'>
-                <div className={`w-28 h-11 flex items-center justify-center rounded-md border border-[${status.color}] `}>
-                    <span className={`${styles.textNoramal} text-[${status.color}]`}>{status.title}</span>
-                </div>
             </div>
         )
     }
@@ -101,26 +85,24 @@ const Report = () => {
             <TableData
                 columns={[
                     {
-                        title: 'Tiêu đề',
-                        dataIndex: 'title',
-                        key: 'title',
+                        title: 'Tên động vật',
+                        dataIndex: 'animal_name',
+                        key: 'animal_name',
                     },
                     {
-                        title: 'Mô tả',
-                        dataIndex: 'description',
-                        key: 'description',
+                        title: 'Tình trạng bảo tồn',
+                        dataIndex: 'status',
+                        key: 'status',
                     },
                     {
-                        title: 'Trạng thái',
-                        dataIndex: 'action',
-                        key: 'action',
-                        width: '15%',
-                        render: renderStatus
+                        title: 'Tên người đóng góp',
+                        dataIndex: 'full_name',
+                        key: 'full_name',
                     },
                     {
-                        title: 'Thời gian',
-                        dataIndex: 'report_time',
-                        key: 'report_time',
+                        title: 'Số điện thoại',
+                        dataIndex: 'phone_number',
+                        key: 'phone_number',
                     },
                     {
                         title: 'Hành động',
@@ -141,7 +123,7 @@ const Report = () => {
         <Home>
             <div className="flex flex-1 flex-col p-6">
                 <div className="flex flex-row">
-                    <h1 className="text-3xl font-extrabold">Báo cáo</h1>
+                    <h1 className="text-3xl font-extrabold">Đóng góp</h1>
                 </div>
 
                 {/* Table */}
@@ -154,4 +136,4 @@ const Report = () => {
     )
 }
 
-export default Report;
+export default Contribute;

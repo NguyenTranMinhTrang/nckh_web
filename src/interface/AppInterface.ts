@@ -76,3 +76,16 @@ export interface IConversationStatus {
     status: string;
     status_name: string;
 }
+
+export interface IContribute {
+    user_id: number;
+    email: string;
+    full_name: string;
+    phone_number: string;
+    contribute_id: number;
+    animal_name: string;
+    description: string;
+    datetime: string;
+    status: string;
+    images: IAnimalImage[];
+}

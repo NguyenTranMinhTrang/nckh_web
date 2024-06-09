@@ -1,7 +1,7 @@
 import React from "react";
 import { Layout, Menu, Modal } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { UnorderedListOutlined, LogoutOutlined, TwitterOutlined, UserOutlined } from "@ant-design/icons";
+import { UnorderedListOutlined, LogoutOutlined, TwitterOutlined, UserOutlined, DatabaseOutlined } from "@ant-design/icons";
 import Logo from "./Logo";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
 import { LOGOUT } from "../config/AppConfig";
@@ -61,6 +61,10 @@ const SideBar = () => {
 
                 <Menu.Item key="/user" icon={<UserOutlined />}>
                     Quản lý người dùng
+                </Menu.Item>
+
+                <Menu.Item key="/contribute" icon={<DatabaseOutlined />}>
+                    Quản lý đóng góp
                 </Menu.Item>
 
                 <Menu.Item key="/logout" icon={<LogoutOutlined />}>
