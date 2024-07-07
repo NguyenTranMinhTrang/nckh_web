@@ -9,6 +9,7 @@ interface IState {
 }
 
 export interface IPropDropdown {
+    readOnly?: boolean;
     keyValue: string;
     keyLabel: string;
     items: any[];
@@ -19,13 +20,11 @@ export interface IPropDropdown {
 }
 
 const IDDropdown = (props: IPropDropdown) => {
-    const { items, keyValue, defaultValue, keyLabel } = props;
+    const { items, keyValue, defaultValue, keyLabel, readOnly = false } = props;
     const [state, setState] = useImmer<IState>({
         items: [],
         selected: null
     })
-
-    console.log('state: ', state);
 
     useEffect(() => {
         const menu: ItemType[] = items.map((item) => {
@@ -92,6 +91,7 @@ const IDDropdown = (props: IPropDropdown) => {
                 menu={{
                     items: state.items,
                     defaultValue: state.selected?.[keyValue] || '',
+                    disabled: readOnly,
                     onClick: onSelect
                 }}
                 placement="bottom">

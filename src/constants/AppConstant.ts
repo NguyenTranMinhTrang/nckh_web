@@ -26,7 +26,6 @@ export const STATUS_REPORT = {
         title: 'Chấp nhận',
         color: 'primary'
     }
-
 }
 
 export const STATUS_REPORT_OPTIONS = [
@@ -45,4 +44,22 @@ export const STATUS_REPORT_OPTIONS = [
         value: 'ACCEPT',
         color: 'primary'
     },
+]
+
+export const STATUS_CONTRIBUTE = [
+    {
+        lable: 'Từ chối',
+        color: 'error',
+        value: 'XX'
+    },
+    {
+        lable: 'Chấp nhận',
+        color: 'error',
+        value: 'OK'
+    },
+    {
+        lable: 'Mới',
+        color: 'basic',
+        value: 'WT'
+    }
 ]

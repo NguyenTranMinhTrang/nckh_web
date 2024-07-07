@@ -89,3 +89,5 @@ export interface IContribute {
     status: string;
     images: IAnimalImage[];
 }
+
+
