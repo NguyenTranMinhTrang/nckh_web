@@ -58,6 +58,7 @@ const Contribute = () => {
             <ModalContribute
                 id={item.contribute_id}
                 onClose={onClose}
+                onDone={loadData}
             />
         )
     }
@@ -130,7 +131,7 @@ const Contribute = () => {
                 <div className="mt-6 flex flex-1 relative overflow-y-scroll">
                     {renderBody()}
                 </div>
-                <ModalBasic ref={refModal} />
+                <ModalBasic ref={refModal} hideFooter />
             </div>
         </Home>
     )

@@ -73,9 +73,7 @@ const IDDropdown = (props: IPropDropdown) => {
     }
 
     const onSelect = (item: any) => {
-        console.log('item: ', item);
         const findItem = state?.items?.find(val => `${val?.key}` === `${item?.key}`);
-        console.log('findItem: ', findItem);
 
         if (findItem) {
             setState(draft => {
@@ -92,6 +90,7 @@ const IDDropdown = (props: IPropDropdown) => {
                     items: state.items,
                     defaultValue: state.selected?.[keyValue] || '',
                     disabled: readOnly,
+                    style: { height: 200, overflowY: 'scroll' },
                     onClick: onSelect
                 }}
                 placement="bottom">

@@ -2,6 +2,9 @@ import React, { forwardRef, useImperativeHandle } from "react";
 
 interface IProps {
     type?: 'information' | 'basic';
+    style?: string;
+    hideFooter?: boolean;
+    textSave?: string;
     onSave?: () => void;
 }
 
@@ -11,7 +14,7 @@ export interface IRefModalBasic {
 }
 
 const ModalBasic = forwardRef<IRefModalBasic, IProps>((props, ref) => {
-    const { type = 'basic' } = props;
+    const { type = 'basic', style, textSave } = props;
     const [showModal, setShowModal] = React.useState(false);
     const [body, setBody] = React.useState<JSX.Element | null>(null);
     const [title, setTitle] = React.useState('');
@@ -65,7 +68,7 @@ const ModalBasic = forwardRef<IRefModalBasic, IProps>((props, ref) => {
                     type="button"
                     onClick={onSave}
                 >
-                    Lưu
+                    {textSave || 'Lưu'}
                 </button>
             </>
         );
@@ -79,7 +82,7 @@ const ModalBasic = forwardRef<IRefModalBasic, IProps>((props, ref) => {
                         <div
                             className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none"
                         >
-                            <div className="relative w-3/4 my-6 mx-auto">
+                            <div className={`relative w-3/4 my-6 mx-auto ${style}`}>
                                 {/*content*/}
                                 <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                                     {/*header*/}
@@ -101,9 +104,13 @@ const ModalBasic = forwardRef<IRefModalBasic, IProps>((props, ref) => {
                                         {body}
                                     </div>
                                     {/*footer*/}
-                                    <div className="flex items-center justify-end p-2 border-t border-solid border-slate-200 rounded-b">
-                                        {renderFooter()}
-                                    </div>
+                                    {
+                                        !props?.hideFooter &&
+                                        <div className="flex items-center justify-end p-2 border-t border-solid border-slate-200 rounded-b">
+                                            {renderFooter()}
+                                        </div>
+                                    }
+
                                 </div>
                             </div>
                         </div>
