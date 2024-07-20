@@ -14,6 +14,7 @@ import ContributeImageField from "./ContributeImageField";
 import { Modal } from "antd";
 import ModalBasic, { IRefModalBasic } from "./ModalBasic";
 import ModalPickAnimal from "./ModalPickAnimal";
+import ModalCreateAnimal from "./ModalCreateAnimal";
 
 interface IProps {
     id: number;
@@ -43,6 +44,7 @@ const ModalContribute = (props: IProps) => {
 
     const refLoading = useRef<IRefLoading>(null);
     const refModal = useRef<IRefModalBasic>(null);
+    const refModalCreate = useRef<IRefModalBasic>(null);
 
     const [state, setState] = useImmer<IState>({
         loading: true,
@@ -129,6 +131,10 @@ const ModalContribute = (props: IProps) => {
         }
     }
 
+    const onDoneCreate = () => {
+
+    }
+
     const pickAnimal = () => {
         refModal?.current?.onOpen(
             'Chọn loài động vật',
@@ -140,12 +146,16 @@ const ModalContribute = (props: IProps) => {
     }
 
     const createNewAnimal = () => {
-
+        refModalCreate?.current?.onOpen(
+            'Tạo mới động vật',
+            <ModalCreateAnimal
+                onClose={() => refModalCreate?.current?.onClose()}
+                onRefresh={onDoneCreate}
+            />,
+        )
     }
 
     const updateForm = async (status: string) => {
-
-
         if (status === 'OK') {
             modal.confirm({
                 title: 'Thông báo',
@@ -291,8 +301,7 @@ const ModalContribute = (props: IProps) => {
                             <button
                                 className="bg-primary text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                 type="button"
-                                onClick={onSave}
-                            >
+                                onClick={onSave}>
                                 Chấp nhận
                             </button>
                         )
@@ -304,9 +313,15 @@ const ModalContribute = (props: IProps) => {
             <div>{contextHolder}</div>;
 
             <Loading ref={refLoading} style="bg-transparent" />
+
             <ModalBasic
                 ref={refModal}
                 style="w-3/5"
+                hideFooter
+            />
+
+            <ModalBasic
+                ref={refModalCreate}
                 hideFooter
             />
 

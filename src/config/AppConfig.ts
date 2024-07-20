@@ -10,3 +10,4 @@ export const GTE_ANIMAL_TYPE = '/admin/getAnimalType';
 export const GET_CONVERSATION_STATUS = '/admin/getConservationStatus';
 export const GET_CONTRIBUTE = '/contribute/getContributeById';
 export const UPDATE_CONTRIBUTE = 'contribute/updateContributeById';
+export const ADD_ANIMAL = '/admin/addAnimalRedList';

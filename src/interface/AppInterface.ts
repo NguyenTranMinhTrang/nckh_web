@@ -1,3 +1,5 @@
+import { RcFile } from "antd/es/upload";
+
 export interface IResponse {
     resultCode: number;
     data: any;
@@ -88,6 +90,10 @@ export interface IContribute {
     datetime: string;
     status: string;
     images: IAnimalImage[];
+}
+
+export interface ImageLocal extends RcFile {
+    base64: string;
 }
 
 
