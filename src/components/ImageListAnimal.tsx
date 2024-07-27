@@ -40,11 +40,7 @@ const ImageListAnimal = (props: ImageListAnimalProps) => {
             if (result) {
                 append({
                     base64: result,
-                    lastModified: file?.lastModified,
-                    name: file?.name,
-                    lastModifiedDate: file?.lastModified,
-                    size: file?.size,
-                    type: file?.type
+                    file
                 })
             }
         })
@@ -83,7 +79,7 @@ const ImageListAnimal = (props: ImageListAnimalProps) => {
                 {
                     (fields as unknown as ImageLocal[])?.map((img: ImageLocal, index: number) => {
                         return (
-                            <div className="flex flex-row items-start mr-4" key={`${img.uid}-${index}`}>
+                            <div className="flex flex-row items-start mr-4" key={`${index}`}>
                                 <img
                                     className="h-44 w-44 rounded-3xl mr-3"
                                     src={img.base64}

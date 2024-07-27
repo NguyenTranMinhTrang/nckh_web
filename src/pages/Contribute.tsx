@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { IContribute } from "../interface/AppInterface";
+import { IContribute, Options } from "../interface/AppInterface";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
 import { useImmer } from "use-immer";
 import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
@@ -10,6 +10,8 @@ import { GET_CONTRIBUTE } from "../config/AppConfig";
 import { toast } from "react-toastify";
 import { EyeOutlined } from "@ant-design/icons";
 import ModalContribute from "../components/ModalContribute";
+import { styles } from "../styles/style";
+import { STATUS_CONTRIBUTE } from "../constants/AppConstant";
 
 interface IState {
     loading: boolean;
@@ -75,7 +77,25 @@ const Contribute = () => {
         )
     }
 
+    const renderStatus = (row: string) => {
+
+        const status: Options | undefined = STATUS_CONTRIBUTE.find((val) => val?.value === row);
+
+        if (!status) {
+            return <></>;
+        }
+
+        return (
+            <div className='flex flex-row items-center justify-start'>
+                <div className={`w-28 h-11 flex items-center justify-center rounded-md border border-${status.color} `}>
+                    <span className={`${styles.textNoramal} text-[${status.color}]`}>{status.label}</span>
+                </div>
+            </div>
+        )
+    }
+
     const renderBody = () => {
+
         if (state.loading) {
             return (
                 <Loading showProps={true} style="bg-transparent" />
@@ -91,9 +111,10 @@ const Contribute = () => {
                         key: 'animal_name',
                     },
                     {
-                        title: 'Tình trạng bảo tồn',
+                        title: 'Trạng thái',
                         dataIndex: 'status',
                         key: 'status',
+                        render: renderStatus,
                     },
                     {
                         title: 'Tên người đóng góp',

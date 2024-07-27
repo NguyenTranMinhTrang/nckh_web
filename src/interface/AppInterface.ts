@@ -92,8 +92,29 @@ export interface IContribute {
     images: IAnimalImage[];
 }
 
-export interface ImageLocal extends RcFile {
+export interface ImageLocal {
     base64: string;
+    file: RcFile;
+}
+
+export interface Options {
+    label: string;
+    value: string;
+    color: string;
+}
+
+export interface IUser {
+    user_id: number;
+    user_name: string;
+    email: string;
+    day_of_birth: string;
+    status: string;
+    full_name: string;
+    role_id: number;
+    role_name: string;
+    role_description: string;
+    avt: string;
+
 }
 
 

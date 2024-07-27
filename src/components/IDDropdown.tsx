@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect } from "react";
 import { useImmer } from "use-immer";
 import { Dropdown } from "antd";
-import { ItemType } from "antd/es/menu/hooks/useItems";
+import { MenuItemType } from "antd/es/menu/interface";
 
 interface IState {
-    items: ItemType[];
+    items: MenuItemType[];
     selected: null | Record<string, any>;
 }
 
@@ -27,7 +27,7 @@ const IDDropdown = (props: IPropDropdown) => {
     })
 
     useEffect(() => {
-        const menu: ItemType[] = items.map((item) => {
+        const menu: MenuItemType[] = items.map((item) => {
             const label = props?.renderLabel ? props.renderLabel : <div>{item?.[keyLabel] || ''}</div>;
             return {
                 ...item,
@@ -40,11 +40,13 @@ const IDDropdown = (props: IPropDropdown) => {
             if (findItem) {
                 setState(draft => {
                     draft.selected = findItem;
+                    //@ts-expect-error: aaa
                     draft.items = menu;
                 })
             }
         } else {
             setState(draft => {
+                //@ts-expect-error: aaa
                 draft.items = menu;
             })
         }

@@ -11,3 +11,7 @@ export const GET_CONVERSATION_STATUS = '/admin/getConservationStatus';
 export const GET_CONTRIBUTE = '/contribute/getContributeById';
 export const UPDATE_CONTRIBUTE = 'contribute/updateContributeById';
 export const ADD_ANIMAL = '/admin/addAnimalRedList';
+
+export const GET_USER = '/admin/getUsersList';
+export const UPDATE_STATUS_USER = '/admin/updateUserStatus';
+export const CREATE_USER = '/admin/createOfficerAccount';

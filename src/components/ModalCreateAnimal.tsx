@@ -1,5 +1,4 @@
 import React from "react";
-import { forwardRef, useImperativeHandle } from "react";
 import { useEffect, useRef } from "react";
 import { useImmer } from "use-immer";
 import { SubmitHandler, useForm } from "react-hook-form";
@@ -15,7 +14,7 @@ import { toast } from "react-toastify";
 
 interface IProps {
     id?: number;
-    onRefresh: () => void;
+    onDone: (id: number) => void;
     onClose: () => void;
 }
 
@@ -37,11 +36,7 @@ interface IFormValue {
     images: ImageLocal[];
 }
 
-export interface IRefModalCreateAnimal {
-    onSave: () => void;
-}
-
-const ModalCreateAnimal = forwardRef<IRefModalCreateAnimal, IProps>((props, ref) => {
+const ModalCreateAnimal = (props: IProps) => {
     const { onClose } = props;
     const axios = useAxiosPrivate();
     const refLoading = useRef<IRefLoading>(null);
@@ -71,10 +66,6 @@ const ModalCreateAnimal = forwardRef<IRefModalCreateAnimal, IProps>((props, ref)
     const onSave = () => {
         handleSubmit(onSubmit)();
     }
-
-    useImperativeHandle(ref, () => ({
-        onSave
-    }))
 
     const loadInitData = async () => {
         const formDataType = new FormData();
@@ -114,32 +105,37 @@ const ModalCreateAnimal = forwardRef<IRefModalCreateAnimal, IProps>((props, ref)
     }
 
     const onSubmit: SubmitHandler<IFormValue> = async (data: IFormValue) => {
-        console.log('onSubmit: ', data);
         if (data?.images?.length === 0) {
             toast.error('Bạn phải cung cấp ảnh của động vật');
             return;
         }
 
+        const { images, ...resValue } = data;
+
         const formData = new FormData();
 
-        for (const [key, value] of Object.entries(data)) {
+        for (const [key, value] of Object.entries(resValue)) {
             formData.append(key, value);
         }
 
-        formData.append('predictID', `${state.maxPredict}`)
+        images.forEach((val) => {
+            formData.append('images', val?.file);
+        })
 
-        console.log(formData);
+        formData.append('predictID', `${state.maxPredict}`)
 
         refLoading?.current?.onOpen();
 
-        const response = await axios.post(ADD_ANIMAL, formData);
-        console.log(response);
+        const response = await axios.post(ADD_ANIMAL, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
 
         if (response?.data?.resultCode === 0) {
-            console.log(response);
-
+            props?.onDone?.(response?.data?.data?.animal_red_list_id);
         } else {
-            toast.error("Thao tác thất bại! Vui lòng thử lại !");
+            toast.error(response?.data?.message || "Thao tác thất bại! Vui lòng thử lại !");
         }
 
         refLoading?.current?.onClose();
@@ -286,7 +282,7 @@ const ModalCreateAnimal = forwardRef<IRefModalCreateAnimal, IProps>((props, ref)
             <Loading ref={refLoading} style="bg-transparent" />
         </div>
     )
-})
+}
 
 ModalCreateAnimal.displayName = 'ModalCreateAnimal';
 

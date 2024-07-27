@@ -1,7 +1,7 @@
 import React from "react";
 import { DatePicker } from "antd";
 import dayjs from "dayjs";
-import { FieldValues, UseFormRegister } from "react-hook-form";
+import { Control, Controller, FieldValues, UseFormRegister, UseFormSetValue } from "react-hook-form";
 
 interface IProps {
     disabled: boolean;
@@ -10,9 +10,11 @@ interface IProps {
     name: string;
     errors: Record<string, { type: string, message: string }>;
     register: UseFormRegister<FieldValues>;
-    setValue?: (name: string, value: unknown, config?: any) => void;
+    setValue?: UseFormSetValue<any>
     style?: string;
     required: boolean;
+    validate?: (value: any) => undefined | string;
+    control?: Control<any, any>;
 }
 
 const InputField = (props: IProps) => {
@@ -25,10 +27,12 @@ const InputField = (props: IProps) => {
         title,
         type,
         style,
-        required = false
+        required = false,
+        validate,
+        control
     } = props;
 
-    const onChange = (date: Date) => {
+    const onChangeDate = (date: Date) => {
         //@ts-expect-error: abc
         const dateObject = new Date(dayjs(date));
         //@ts-expect-error: abc
@@ -38,23 +42,35 @@ const InputField = (props: IProps) => {
     const renderInput = () => {
         if (type === 'date') {
             return (
-                <div className="relative">
-                    <DatePicker
-                        className="border-2 shadow appearance-none rounded-md w-full py-2.5 px-3 font-poppins leading-tight focus:outline-none focus:border-primary"
-                        onChange={onChange}
-                        format={"DD/MM/YYYY"}
-                        picker={'date'}
-                        inputReadOnly={true}
-                        allowClear={false}
-                    />
-                </div>
+                <Controller
+                    name={name}
+                    control={control}
+                    rules={{
+                        required: required ? 'Trường thông tin không được để trống !' : undefined,
+                        validate: validate
+                    }}
+                    render={() => (
+                        <div className="relative">
+                            <DatePicker
+                                className="border-2 shadow appearance-none rounded-md w-full py-2.5 px-3 mt-3 font-poppins leading-tight focus:outline-none focus:border-primary"
+                                onChange={onChangeDate}
+                                format={"DD/MM/YYYY"}
+                                picker={'date'}
+                                inputReadOnly={true}
+                                allowClear={false}
+                            />
+                        </div>
+                    )}
+                />
+
             );
         }
 
         return (
             <input
                 {...register(name, {
-                    required: required ? 'Trường thông tin không được để trống !' : undefined
+                    required: required ? 'Trường thông tin không được để trống !' : undefined,
+                    validate: validate
                 })}
                 disabled={disabled}
                 type={type}

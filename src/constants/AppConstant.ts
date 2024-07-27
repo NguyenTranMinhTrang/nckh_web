@@ -1,3 +1,5 @@
+import { Options } from "../interface/AppInterface";
+
 export const COLOR_PRIMARY = '#45d279';
 export const COLOR_ERROR = '#EF4444';
 export const COLOR_BASIC = '#3D75FA';
@@ -46,19 +48,19 @@ export const STATUS_REPORT_OPTIONS = [
     },
 ]
 
-export const STATUS_CONTRIBUTE = [
+export const STATUS_CONTRIBUTE: Options[] = [
     {
-        lable: 'Từ chối',
+        label: 'Từ chối',
         color: 'error',
         value: 'XX'
     },
     {
-        lable: 'Chấp nhận',
+        label: 'Chấp nhận',
         color: 'error',
         value: 'OK'
     },
     {
-        lable: 'Mới',
+        label: 'Mới',
         color: 'basic',
         value: 'WT'
     }

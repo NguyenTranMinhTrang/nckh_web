@@ -1,17 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import { useImmer } from "use-immer";
 import { toast } from "react-toastify";
+import { Modal } from "antd";
+import { Controller, useForm } from "react-hook-form";
 import Loading, { IRefLoading } from "./Loading";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
-import { IAnimalImage, IContribute, IStatusReport } from "../interface/AppInterface";
+import { IAnimalImage, IContribute, Options } from "../interface/AppInterface";
 import { GET_CONTRIBUTE, UPDATE_CONTRIBUTE } from "../config/AppConfig";
-import { Controller, useForm } from "react-hook-form";
 import InputField from "./InputField";
 import IDDropdownField from "./IDDropdownField";
 import { STATUS_CONTRIBUTE } from "../constants/AppConstant";
 import { styles } from "../styles/style";
 import ContributeImageField from "./ContributeImageField";
-import { Modal } from "antd";
 import ModalBasic, { IRefModalBasic } from "./ModalBasic";
 import ModalPickAnimal from "./ModalPickAnimal";
 import ModalCreateAnimal from "./ModalCreateAnimal";
@@ -63,7 +63,6 @@ const ModalContribute = (props: IProps) => {
         const formData = new FormData();
         formData.append('contributeId', `${id}`);
         const response = await axios.post(GET_CONTRIBUTE, formData);
-        console.log('response: ', response);
 
         if (response?.data && response?.data?.resultCode === 0) {
 
@@ -108,6 +107,7 @@ const ModalContribute = (props: IProps) => {
         const response = await axios.post(UPDATE_CONTRIBUTE, formData);
 
         if (response?.data && response?.data?.resultCode === 0) {
+            toast.success("Thao tác thành công");
             onDone?.();
             onClose();
         } else {
@@ -131,8 +131,19 @@ const ModalContribute = (props: IProps) => {
         }
     }
 
-    const onDoneCreate = () => {
+    const onDoneCreate = (id: number) => {
+        refModalCreate?.current?.onClose();
+        if (id) {
+            const valueForm = getValues();
+            const images = valueForm?.images?.filter((value) => value?.ticked)?.join('-') || '';
+            const formData = new FormData();
+            formData.append('status', 'OK');
+            formData.append('contributeId', `${valueForm?.contribute_id}`);
+            formData.append('lsImageAccept', images);
+            formData.append('animalRedListID', `${id}`);
 
+            updateStatus(formData);
+        }
     }
 
     const pickAnimal = () => {
@@ -150,7 +161,7 @@ const ModalContribute = (props: IProps) => {
             'Tạo mới động vật',
             <ModalCreateAnimal
                 onClose={() => refModalCreate?.current?.onClose()}
-                onRefresh={onDoneCreate}
+                onDone={onDoneCreate}
             />,
         )
     }
@@ -168,14 +179,23 @@ const ModalContribute = (props: IProps) => {
                 onOk: pickAnimal,
                 onCancel: createNewAnimal
             })
+        } else {
+            const valueForm = getValues();
+            const formData = new FormData();
+            formData.append('status', status);
+            formData.append('contributeId', `${valueForm?.contribute_id}`);
+            formData.append('lsImageAccept', '');
+            formData.append('animalRedListID', '');
+            updateStatus(formData);
         }
-
-
-
     }
 
     const onSave = () => {
         updateForm('OK');
+    }
+
+    const onReject = () => {
+        updateForm('XX');
     }
 
     if (state.loading) {
@@ -186,10 +206,10 @@ const ModalContribute = (props: IProps) => {
         )
     }
 
-    const renderStatusSelected = (item: IStatusReport) => {
+    const renderStatusSelected = (item: Options) => {
         return (
             <div className={`w-28 h-11 flex items-center justify-center rounded-md border-double border-4 border-${item.color}`}>
-                <span className={`${styles.textNoramal} text-${item.color}`}>{item.lable}</span>
+                <span className={`${styles.textNoramal} text-${item.color}`}>{item.label}</span>
             </div>
         )
     }
@@ -248,7 +268,7 @@ const ModalContribute = (props: IProps) => {
                             readOnly
                             name="status"
                             control={control}
-                            keyLabel="lable"
+                            keyLabel="label"
                             keyValue="value"
                             items={STATUS_CONTRIBUTE}
                             renderItemSelected={renderStatusSelected}
@@ -283,7 +303,7 @@ const ModalContribute = (props: IProps) => {
                 <button
                     className="bg-error text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-5"
                     type="button"
-                    onClick={onSave}>
+                    onClick={onReject}>
                     Từ chối
                 </button>
 
