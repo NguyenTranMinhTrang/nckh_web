@@ -15,3 +15,5 @@ export const ADD_ANIMAL = '/admin/addAnimalRedList';
 export const GET_USER = '/admin/getUsersList';
 export const UPDATE_STATUS_USER = '/admin/updateUserStatus';
 export const CREATE_USER = '/admin/createOfficerAccount';
+export const UPLOAD_AVATAR_USER = '/user/updateAvt';
+export const UPDATE_PROFILE = '/user/updateProfile';

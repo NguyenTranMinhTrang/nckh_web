@@ -10,7 +10,7 @@ export interface IUserData {
     accessToken: string;
     role: string[];
     avt: string;
-    dayOfBirth: string;
+    dayOfBirth?: string;
     email: string;
     fullName: string;
     phoneNumber: string;

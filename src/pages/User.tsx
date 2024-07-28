@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { Modal } from "antd";
 import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
-import { EyeOutlined, LockOutlined, PlusOutlined, UnlockOutlined } from "@ant-design/icons";
+import { LockOutlined, PlusOutlined, UnlockOutlined } from "@ant-design/icons";
 import Home from "./Home";
 import Loading, { IRefLoading } from "../components/Loading";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
@@ -107,12 +107,6 @@ const User = () => {
     const renderActions = (row: IUser) => {
         return (
             <div className='flex flex-row items-center justify-center'>
-                <button
-                    className="w-9 h-9 bg-[#2666FA] rounded-lg mr-2 hover:opacity-90"
-                    onClick={(e) => onBlock(e, row)}>
-                    <EyeOutlined style={{ color: "white" }} />
-                </button>
-
                 <button
                     className="w-9 h-9 bg-error rounded-lg mr-2 hover:opacity-90"
                     onClick={(e) => onBlock(e, row)}>

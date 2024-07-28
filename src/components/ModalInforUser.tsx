@@ -1,38 +1,46 @@
 import React, { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../redux/store";
+import { IUserData } from "../interface/AppInterface";
 import InputField from "./InputField";
-import dayjs from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import Loading, { IRefLoading } from "./Loading";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
-import { CREATE_USER } from "../config/AppConfig";
+import { UPDATE_PROFILE } from "../config/AppConfig";
+import { setUser } from "../redux/reducers/userSlice";
 
-interface IFormValue {
-    userName: string;
-    email: string;
-    dayOfBirth: Date;
-    fullName: string;
-    phoneNumber: number;
-}
-
-interface ModalCreateUserProps {
+interface ModalInforUserProps {
+    type: 'detail' | 'update';
     onClose: () => void;
-    onDone: () => void;
 }
 
-const ModalCreateUser = (props: ModalCreateUserProps) => {
+interface ValueForm extends Omit<IUserData, 'dayOfBirth'> {
+    dayOfBirth?: Dayjs;
+}
 
-    const { onClose, onDone } = props;
+const ModalInforUser = (props: ModalInforUserProps) => {
 
+    const { type, onClose } = props;
+
+    const readOnly = type === 'detail';
+
+    const userData = useAppSelector(st => st.user.auth);
     const axios = useAxiosPrivate();
+    const dispatch = useDispatch();
 
     const refLoading = useRef<IRefLoading>(null);
 
-    const { control, handleSubmit, register, setValue, formState: { errors } } = useForm<IFormValue>({
+    const { handleSubmit, control, register, formState: { errors }, setValue } = useForm<ValueForm>({
         mode: 'all',
+        defaultValues: {
+            ...userData,
+            dayOfBirth: userData?.dayOfBirth ? dayjs(userData?.dayOfBirth, 'YYYY-MM-DD') : undefined
+        },
     })
 
-    const onSubmit = async (values: IFormValue) => {
+    const onSubmit = async (values: ValueForm) => {
         refLoading?.current?.onOpen();
 
         const { dayOfBirth, ...resValue } = values;
@@ -43,12 +51,25 @@ const ModalCreateUser = (props: ModalCreateUserProps) => {
             formData.append(key, `${value}`);
         }
 
-        formData.append('dayOfBirth', dayjs(new Date(dayOfBirth)).format('YYYY-MM-DD'));
+        if (dayOfBirth) {
+            formData.append('dayOfBirth', dayjs(dayOfBirth).format('YYYY-MM-DD'));
+        }
 
-        const response = await axios.post(CREATE_USER, formData);
+        const response = await axios.post(UPDATE_PROFILE, formData);
 
         if (response?.data?.resultCode === 0) {
-            onDone();
+
+            const newUser = {
+                ...userData,
+                ...response?.data?.data
+            }
+
+            dispatch(setUser(newUser));
+
+            toast.success("Thao tác thành công");
+
+            onClose();
+
         } else {
             toast.error(response?.data?.message || "Thao tác thất bại! Vui lòng thử lại !");
         }
@@ -79,20 +100,10 @@ const ModalCreateUser = (props: ModalCreateUserProps) => {
     return (
         <div>
             <div className="p-5 min-h-80 max-h-96 overflow-y-scroll">
-
-                <InputField
-                    required={true}
-                    //@ts-expect-error: right type
-                    errors={errors}
-                    name={'fullName'}
-                    title={'Họ và tên'}
-                    //@ts-expect-error: right type
-                    register={register}
-                />
-
-                <div className="flex items-start mt-3">
+                <div className="flex items-start">
                     <div className="flex flex-1 mr-3">
                         <InputField
+                            disabled
                             required={true}
                             //@ts-expect-error: right type
                             errors={errors}
@@ -103,8 +114,9 @@ const ModalCreateUser = (props: ModalCreateUserProps) => {
                         />
                     </div>
 
-                    <div className="flex flex-1 flex-row">
+                    <div className="flex flex-1 mr-3">
                         <InputField
+                            disabled
                             required={true}
                             //@ts-expect-error: right type
                             errors={errors}
@@ -113,29 +125,28 @@ const ModalCreateUser = (props: ModalCreateUserProps) => {
                             //@ts-expect-error: right type
                             register={register}
                             validate={validateEmail}
+
                         />
                     </div>
-
                 </div>
 
                 <div className="flex items-start mt-3">
                     <div className="flex flex-1 mr-3">
                         <InputField
+                            disabled={readOnly}
                             required={true}
                             //@ts-expect-error: right type
                             errors={errors}
-                            name={'dayOfBirth'}
-                            title={'Ngày sinh'}
-                            type="date"
+                            name={'fullName'}
+                            title={'Tên '}
                             //@ts-expect-error: right type
                             register={register}
-                            setValue={setValue}
-                            control={control}
                         />
                     </div>
 
                     <div className="flex flex-1 flex-row">
                         <InputField
+                            disabled={readOnly}
                             required={true}
                             //@ts-expect-error: right type
                             errors={errors}
@@ -148,6 +159,27 @@ const ModalCreateUser = (props: ModalCreateUserProps) => {
                     </div>
                 </div>
 
+                <div className="flex items-start mt-3">
+                    <div className="flex flex-1 mr-3">
+                        <InputField
+                            disabled={readOnly}
+                            required={true}
+                            //@ts-expect-error: right type
+                            errors={errors}
+                            name={'dayOfBirth'}
+                            title={'Ngày sinh'}
+                            type="date"
+                            //@ts-expect-error: right type
+                            register={register}
+                            control={control}
+                            setValue={setValue}
+                        />
+                    </div>
+
+                    <div className="flex flex-1 flex-row">
+
+                    </div>
+                </div>
             </div>
 
             <div className="flex items-center justify-end p-2 border-t border-solid border-slate-200 rounded-b">
@@ -171,4 +203,4 @@ const ModalCreateUser = (props: ModalCreateUserProps) => {
     )
 }
 
-export default ModalCreateUser;
+export default ModalInforUser;

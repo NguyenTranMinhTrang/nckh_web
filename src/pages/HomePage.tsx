@@ -7,6 +7,7 @@ const HomePage = () => {
     useEffect(() => {
         navigate('/report');
     }, []);
+
     return (
         <div>
         </div>

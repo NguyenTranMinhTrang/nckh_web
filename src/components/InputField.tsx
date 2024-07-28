@@ -49,18 +49,21 @@ const InputField = (props: IProps) => {
                         required: required ? 'Trường thông tin không được để trống !' : undefined,
                         validate: validate
                     }}
-                    render={() => (
-                        <div className="relative">
-                            <DatePicker
-                                className="border-2 shadow appearance-none rounded-md w-full py-2.5 px-3 mt-3 font-poppins leading-tight focus:outline-none focus:border-primary"
-                                onChange={onChangeDate}
-                                format={"DD/MM/YYYY"}
-                                picker={'date'}
-                                inputReadOnly={true}
-                                allowClear={false}
-                            />
-                        </div>
-                    )}
+                    render={({ field }) => {
+                        return (
+                            <div className="relative">
+                                <DatePicker
+                                    defaultValue={field?.value}
+                                    className="border-2 shadow appearance-none rounded-md w-full py-2.5 px-3 mt-3 font-poppins leading-tight focus:outline-none focus:border-primary"
+                                    onChange={onChangeDate}
+                                    format={"DD/MM/YYYY"}
+                                    picker={'date'}
+                                    inputReadOnly={true}
+                                    allowClear={false}
+                                />
+                            </div>
+                        )
+                    }}
                 />
 
             );
