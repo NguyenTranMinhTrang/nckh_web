@@ -16,7 +16,6 @@ const TableData = (props: IProps) => {
         data,
         sort,
         maxX,
-        maxY
     } = props;
 
     let sortColumns = null;
@@ -39,8 +38,9 @@ const TableData = (props: IProps) => {
         <Table
             columns={sortColumns || columns}
             dataSource={data}
-            scroll={{ x: maxX || 1000, y: maxY || 500 }}
+            scroll={{ x: maxX || 1000, y: '100%' }}
             pagination={false}
+            sticky
         />
     )
 }

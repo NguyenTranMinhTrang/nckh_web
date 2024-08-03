@@ -13,6 +13,7 @@ export const STORAGE_KEY = {
 
 export const ROUTE_RIGHT = {
     report: '/report/getReport',
+    createAccount: '/admin/createOfficerAccount'
 }
 
 export const STATUS_REPORT = {

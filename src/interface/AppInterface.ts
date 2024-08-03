@@ -62,6 +62,8 @@ export interface IAnimal {
     sc_name: string;
     status: string;
     vn_name: string;
+    conservation_status_id: number;
+    animal_type_id: number;
 }
 
 export interface IAnimalType {

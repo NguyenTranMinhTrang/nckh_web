@@ -131,7 +131,7 @@ const Contribute = () => {
                         key: 'operation',
                         fixed: 'right',
                         render: renderActions,
-                        align: 'right',
+                        align: 'center',
                         width: '10%',
                     }
                 ]}

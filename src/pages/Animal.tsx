@@ -6,9 +6,10 @@ import useAxiosPrivate from "../hook/useAxiosPrivate";
 import { GET_ANIMAL } from "../config/AppConfig";
 import { IAnimal } from "../interface/AppInterface";
 import TableData from "../components/TableData";
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, PlusOutlined } from "@ant-design/icons";
 import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
 import ModalDetailAnimal, { IRefModalDetailAnimal } from "../components/ModalDetailAnimal";
+import ModalCreateAnimal from "../components/ModalCreateAnimal";
 
 interface IState {
     loading: boolean;
@@ -22,8 +23,8 @@ const Animal = () => {
         data: []
     })
 
-    const refModal = useRef<IRefModalBasic>(null);
     const refModalAnimal = useRef<IRefModalDetailAnimal>(null);
+    const refModal = useRef<IRefModalBasic>(null);
 
     useEffect(() => {
         loadData();
@@ -48,15 +49,23 @@ const Animal = () => {
         loadData();
     }
 
-    const onSave = () => {
-        console.log('Come here');
+    const onDoneCreate = () => {
+        refModal?.current?.onClose();
+        loadData();
+    }
 
-        refModalAnimal?.current?.onSave();
+    const onCreateAnimal = () => {
+        refModal?.current?.onOpen(
+            'Tạo mới động vật',
+            <ModalCreateAnimal
+                onClose={() => refModal?.current?.onClose()}
+                onDone={onDoneCreate}
+            />
+        )
     }
 
     const onDetail = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: IAnimal) => {
         e.preventDefault();
-        console.log('item: ', item);
         refModal?.current?.onOpen(
             'Chi tiết',
             <ModalDetailAnimal
@@ -75,12 +84,6 @@ const Animal = () => {
                     className="w-9 h-9 bg-[#2666FA] rounded-lg mr-2 hover:opacity-90"
                     onClick={(e) => onDetail(e, row)}>
                     <EyeOutlined style={{ color: "white" }} />
-                </button>
-
-                <button
-                    className="w-9 h-9 bg-error rounded-lg mr-2 hover:opacity-90"
-                    onClick={(e) => onDetail(e, row)}>
-                    <DeleteOutlined style={{ color: "white" }} />
                 </button>
             </div>
         )
@@ -119,11 +122,11 @@ const Animal = () => {
                         key: 'conservation_status',
                     },
                     {
-                        title: '',
+                        title: 'Hành động',
                         key: 'operation',
                         fixed: 'right',
                         render: renderActions,
-                        align: 'right',
+                        align: 'center',
                         width: '15%',
                     }
                 ]}
@@ -134,15 +137,28 @@ const Animal = () => {
     return (
         <Home>
             <div className="flex flex-1 flex-col p-6">
-                <div className="flex flex-row">
-                    <h1 className="text-3xl font-extrabold">Quản lý động vật</h1>
+                <div className="flex flex-row justify-between">
+                    <div>
+                        <h1 className="text-3xl font-extrabold">Quản lý người dùng</h1>
+                    </div>
+
+                    <button
+                        className="px-4 h-9 bg-[#2666FA] flex items-center justify-center rounded-md hover:opacity-90"
+                        onClick={onCreateAnimal}>
+                        <h2 className="text-white mr-2">Tạo mới</h2>
+                        <PlusOutlined style={{ color: "white" }} />
+                    </button>
                 </div>
 
                 {/* Table */}
                 <div className="mt-6 flex flex-1 relative overflow-y-scroll">
                     {renderBody()}
                 </div>
-                <ModalBasic onSave={onSave} ref={refModal} />
+
+                <ModalBasic
+                    ref={refModal}
+                    hideFooter
+                />
             </div>
         </Home>
     )

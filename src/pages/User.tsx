@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from "react";
-import { Modal } from "antd";
+import { Modal, Switch } from "antd";
 import { toast } from "react-toastify";
 import { useImmer } from "use-immer";
-import { LockOutlined, PlusOutlined, UnlockOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import Home from "./Home";
 import Loading, { IRefLoading } from "../components/Loading";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
@@ -11,6 +11,9 @@ import { IUser } from "../interface/AppInterface";
 import TableData from "../components/TableData";
 import ModalBasic, { IRefModalBasic } from "../components/ModalBasic";
 import ModalCreateUser from "../components/ModalCreateUser";
+import { useAppSelector } from "../redux/store";
+import { checkRight } from "../utils/CommonUtil";
+import { ROUTE_RIGHT } from "../constants/AppConstant";
 
 interface IState {
     loading: boolean;
@@ -21,6 +24,12 @@ const User = () => {
     const axios = useAxiosPrivate();
 
     const [modal, contextHolder] = Modal.useModal();
+
+    const auth = useAppSelector(st => st?.user?.auth);
+
+    console.log('auth: ', auth);
+
+    const CREATE_ACCOUNT = checkRight(auth?.role || [], ROUTE_RIGHT.createAccount);
 
     const refLoading = useRef<IRefLoading>(null);
     const refModal = useRef<IRefModalBasic>(null);
@@ -63,12 +72,9 @@ const User = () => {
         refLoading?.current?.onClose();
     }
 
-    const onBlock = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>, item: IUser) => {
-        e.preventDefault();
+    const onBlock = (item: IUser) => (checked: boolean) => {
 
-        const isActive = item?.status === 'OK';
-
-        const title = isActive ?
+        const title = checked ?
             "Bạn có chắc chắn muốn khóa tài khoản này ?"
             :
             "Bạn có chắc chắn muốn mở khóa tài khoản này";
@@ -81,7 +87,7 @@ const User = () => {
             okButtonProps: {
                 style: { color: 'black', border: 0.5 }
             },
-            onOk: onUpdateStatus(isActive ? 'XX' : 'OK', item)
+            onOk: onUpdateStatus(checked ? 'OK' : 'XX', item)
         })
     }
 
@@ -107,16 +113,10 @@ const User = () => {
     const renderActions = (row: IUser) => {
         return (
             <div className='flex flex-row items-center justify-center'>
-                <button
-                    className="w-9 h-9 bg-error rounded-lg mr-2 hover:opacity-90"
-                    onClick={(e) => onBlock(e, row)}>
-                    {
-                        row?.status === 'OK' ?
-                            <LockOutlined style={{ color: "white" }} />
-                            :
-                            <UnlockOutlined style={{ color: "white" }} />
-                    }
-                </button>
+                <Switch
+                    checked={row?.status === 'OK'}
+                    onChange={onBlock(row)}
+                />
             </div>
         )
     }
@@ -159,11 +159,11 @@ const User = () => {
                         key: 'role_name',
                     },
                     {
-                        title: '',
+                        title: 'Active',
                         key: 'operation',
                         fixed: 'right',
                         render: renderActions,
-                        align: 'right',
+                        align: 'center',
                         width: '15%',
                     }
                 ]}
@@ -179,12 +179,15 @@ const User = () => {
                         <h1 className="text-3xl font-extrabold">Quản lý người dùng</h1>
                     </div>
 
-                    <button
-                        className="px-4 h-9 bg-[#2666FA] flex items-center justify-center rounded-md hover:opacity-90"
-                        onClick={onCreateNewUser}>
-                        <h2 className="text-white mr-2">Tạo mới</h2>
-                        <PlusOutlined style={{ color: "white" }} />
-                    </button>
+                    {
+                        CREATE_ACCOUNT &&
+                        <button
+                            className="px-4 h-9 bg-[#2666FA] flex items-center justify-center rounded-md hover:opacity-90"
+                            onClick={onCreateNewUser}>
+                            <h2 className="text-white mr-2">Tạo mới</h2>
+                            <PlusOutlined style={{ color: "white" }} />
+                        </button>
+                    }
                 </div>
 
                 {/* Table */}

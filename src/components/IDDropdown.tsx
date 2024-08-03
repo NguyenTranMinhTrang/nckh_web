@@ -37,6 +37,8 @@ const IDDropdown = (props: IPropDropdown) => {
         })
         if (defaultValue) {
             const findItem = items.find(val => val?.[keyValue] === defaultValue);
+            console.log('findItem: ', findItem, defaultValue);
+
             if (findItem) {
                 setState(draft => {
                     draft.selected = findItem;

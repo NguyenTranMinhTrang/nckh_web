@@ -25,25 +25,22 @@ const Login = () => {
     const { register, handleSubmit, formState: { errors } } = useForm<IFormValues>({
         mode: 'all',
         defaultValues: {
-            userName: 'rap_admin',
-            password: 'user2024'
+            userName: '',
+            password: ''
         },
     });
 
     const loadingRef = useRef<IRefLoading>(null);
 
     const handleLogin = async (values: IFormValues) => {
-        console.log('values: ', values);
         loadingRef?.current?.onOpen();
         const formData = new FormData();
         formData.append('userName', values?.userName);
         formData.append('password', values?.password);
 
         const response: IResponse = await axios.post(LOGIN, formData);
-        console.log('response: ', response);
 
         if (response?.data && response?.data?.resultCode === 0) {
-            console.log('response: ', response);
             const userData: IUserData = response?.data?.data;
             dispatch(setUser(userData));
             await localStorage.setItem(STORAGE_KEY.USER_DATA, JSON.stringify(userData));

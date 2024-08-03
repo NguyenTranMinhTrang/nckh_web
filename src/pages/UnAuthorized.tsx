@@ -9,6 +9,9 @@ const UnAuthorized = () => {
     const previousPath = getDataFromLocal(STORAGE_KEY.PREVIOUS_PATH);
     const navigate = useNavigate();
 
+    console.log();
+
+
     const handleGoback = () => {
         navigate(-1);
         saveToLocal(STORAGE_KEY.PREVIOUS_PATH, previousPath);

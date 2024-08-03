@@ -15,6 +15,8 @@ const IDDropdownField = (props: IProps) => {
             control={control}
             render={({ field }) => {
                 const { onChange, value } = field;
+                console.log('value: ', value);
+
                 return (
                     <IDDropdown
                         {...resProps}

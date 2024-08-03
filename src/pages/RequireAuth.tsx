@@ -6,6 +6,7 @@ import { setUser } from "../redux/reducers/userSlice";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../redux/store";
 import { STORAGE_KEY } from "../constants/AppConstant";
+import { toast } from "react-toastify";
 
 interface IProps {
     allowRight: string;
@@ -22,11 +23,20 @@ const RequireAuth = (props: IProps) => {
         checkLogin();
     }, []);
 
-    console.log('userData: ', userData);
+    useEffect(() => {
+        window.addEventListener("resize", handleResize)
+
+        return () => window.removeEventListener('resize', handleResize);
+
+    }, []);
+
+    const handleResize = () => {
+        if (window.innerWidth < 1024) {
+            toast.error("Website không hổ trợ xem trên màn hình dưới 1024");
+        }
+    }
 
     const checkLogin = async () => {
-        console.log('Run check login');
-
         try {
             if (!userData) {
                 const response = await localStorage.getItem(STORAGE_KEY.USER_DATA);

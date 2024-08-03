@@ -134,6 +134,7 @@ const ModalCreateAnimal = (props: IProps) => {
 
         if (response?.data?.resultCode === 0) {
             props?.onDone?.(response?.data?.data?.animal_red_list_id);
+            toast.success("Thao tác thành công !")
         } else {
             toast.error(response?.data?.message || "Thao tác thất bại! Vui lòng thử lại !");
         }

@@ -1,14 +1,17 @@
 import React, { forwardRef, useImperativeHandle } from "react";
 import { useEffect, useRef } from "react";
 import { useImmer } from "use-immer";
+import { toast } from "react-toastify";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { IAnimal, IAnimalImage, IAnimalType, IConversationStatus } from "../interface/AppInterface";
+import { IAnimal, IAnimalType, IConversationStatus } from "../interface/AppInterface";
 import Loading, { IRefLoading } from "./Loading";
 import useAxiosPrivate from "../hook/useAxiosPrivate";
-import { GET_ANIMAL, GET_CONVERSATION_STATUS, GTE_ANIMAL_TYPE } from "../config/AppConfig";
+import { GET_ANIMAL, GET_CONVERSATION_STATUS, GTE_ANIMAL_TYPE, UPDATE_ANIMAL } from "../config/AppConfig";
 import { styles } from "../styles/style";
 import IDDropdownField from "./IDDropdownField";
 import InputField from "./InputField";
+import ImageListAnimalUpdate, { ImageItem } from "./ImageListAnimalUpdate";
+import { RcFile } from "antd/es/upload";
 
 interface IProps {
     id: number;
@@ -23,21 +26,16 @@ interface IState {
     status: IConversationStatus[];
 }
 
-interface IFormValue {
-    animalTypeId: string;
-    conservation_status_id: string;
-    VNName: string;
-    ENName: string;
-    SCName: string;
-    animal_infor: string;
-}
-
 export interface IRefModalDetailAnimal {
     onSave: () => void;
 }
 
+interface ValueForm extends Omit<IAnimal, 'animal_type' | 'conservation_status'> {
+    ls_delete: number[];
+}
+
 const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref) => {
-    const { id } = props;
+    const { id, onClose } = props;
     const axios = useAxiosPrivate();
     const refLoading = useRef<IRefLoading>(null);
     const [state, setState] = useImmer<IState>({
@@ -47,14 +45,11 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
         status: []
     })
 
-    const { control, handleSubmit, register, formState: { errors }, reset } = useForm<IFormValue>({
+    const { control, handleSubmit, register, formState: { errors }, reset, getValues, setValue } = useForm<ValueForm>({
         mode: 'all',
         defaultValues: {
-            VNName: '',
-            ENName: '',
-            SCName: '',
-            animal_infor: ''
-        },
+            ls_delete: []
+        }
     })
 
     useEffect(() => {
@@ -82,18 +77,12 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
             axios.post(GET_CONVERSATION_STATUS, formDataStatus)
         ])
 
-        console.log('resAnimal: ', resAnimal);
-        console.log('resType: ', resType);
-        console.log('resStatus: ', resStatus);
-
         if (resAnimal?.data?.resultCode === 0 && resType?.data?.resultCode === 0 || resStatus?.data?.resultCode === 0) {
             const dataAnimal: IAnimal = resAnimal?.data?.data;
-            reset({
-                VNName: dataAnimal?.vn_name,
-                ENName: dataAnimal?.en_name,
-                SCName: dataAnimal?.sc_name,
-                animal_infor: dataAnimal?.animal_infor,
-            })
+            const { animal_type, conservation_status, ...resValue } = dataAnimal;
+            console.log('animal_type: ', animal_type);
+            console.log('conservation_status: ', conservation_status);
+            reset(resValue);
             setState(draft => {
                 draft.loading = false;
                 draft.data = resAnimal?.data?.data;
@@ -107,26 +96,50 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
         }
     }
 
-    const onSubmit: SubmitHandler<IFormValue> = (data: IFormValue) => {
+    const onSubmit: SubmitHandler<ValueForm> = async (data: ValueForm) => {
         console.log('onSubmit: ', data);
+
+        const { images, ...resValue } = data;
+
+        const formData = new FormData();
+        for (const [key, value] of Object.entries(resValue)) {
+            formData.append(key, `${value}`);
+        }
+
+        images.forEach((val: ImageItem) => {
+            if (!val?.image_id) {
+                formData.append('images', val?.file as RcFile);
+            }
+        })
+
+        refLoading?.current?.onOpen();
+
+        const response = await axios.post(UPDATE_ANIMAL, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        });
+
+        if (response?.data?.resultCode === 0) {
+            onClose();
+            props?.onRefresh?.();
+            toast.success("Thao tác thành công !")
+        } else {
+            toast.error(response?.data?.message || "Thao tác thất bại! Vui lòng thử lại !");
+        }
+
+        refLoading?.current?.onClose();
     }
 
     const renderImage = () => {
         return (
-            <div className="flex flex-row">
-                {
-                    state?.data?.images?.map((img: IAnimalImage) => {
-                        return (
-                            <div key={img.image_id}>
-                                <img
-                                    className="h-44 w-44 rounded-3xl mr-3"
-                                    src={img.image_public_path}
-                                />
-                            </div>
-                        )
-                    })
-                }
-            </div>
+
+            <ImageListAnimalUpdate
+                name="images"
+                control={control}
+                getValues={getValues}
+                setValue={setValue}
+            />
         )
     }
 
@@ -155,96 +168,108 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
     }
 
     return (
-        <div className="p-5 min-h-80 max-h-96 overflow-y-scroll">
-            <div className="flex items-start">
-                <div className="flex flex-1 mr-3">
-                    <InputField
-                        required={true}
-                        //@ts-expect-error: right type
-                        errors={errors}
-                        name={'VNName'}
-                        title={'Tên Việt'}
-                        //@ts-expect-error: right type
-                        register={register}
-                    />
-                </div>
-                <div className="flex flex-1 flex-row">
-                    <div>
-                        <div className="flex flex-row items-center mb-3">
-                            <label className="text-[16px] font-poppins font-semibold">Loại</label>
-                            <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
-                        </div>
-                        <IDDropdownField
-                            name="animalTypeId"
-                            control={control}
-                            keyLabel="type_name"
-                            keyValue="animal_type_id"
-                            items={state?.animalType}
-                            renderItemSelected={renderItemSelected}
+        <div>
+            <div className="p-5 min-h-80 max-h-96 overflow-y-scroll">
+                <div className="flex items-start">
+                    <div className="flex flex-1 mr-3">
+                        <InputField
+                            required={true}
+                            //@ts-expect-error: right type
+                            errors={errors}
+                            name={'vn_name'}
+                            title={'Tên Việt'}
+                            //@ts-expect-error: right type
+                            register={register}
                         />
                     </div>
-
-                    <div className="ml-3">
-                        <div className="flex flex-row items-center mb-3">
-                            <label className="text-[16px] font-poppins font-semibold">Tình trạng bảo tồn</label>
-                            <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
+                    <div className="flex flex-1 flex-row">
+                        <div>
+                            <div className="flex flex-row items-center mb-3">
+                                <label className="text-[16px] font-poppins font-semibold">Loại</label>
+                                <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
+                            </div>
+                            <IDDropdownField
+                                name="animal_type_id"
+                                control={control}
+                                keyLabel="type_name"
+                                keyValue="animal_type_id"
+                                items={state?.animalType}
+                                renderItemSelected={renderItemSelected}
+                            />
                         </div>
-                        <IDDropdownField
-                            name="conservation_status_id"
-                            control={control}
-                            keyLabel="status_name"
-                            keyValue="conservation_status_id"
-                            items={state?.status}
-                            renderItemSelected={renderStatusSelected}
+
+                        <div className="ml-3">
+                            <div className="flex flex-row items-center mb-3">
+                                <label className="text-[16px] font-poppins font-semibold">Tình trạng bảo tồn</label>
+                                <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
+                            </div>
+                            <IDDropdownField
+                                name="conservation_status_id"
+                                control={control}
+                                keyLabel="status_name"
+                                keyValue="conservation_status_id"
+                                items={state?.status}
+                                renderItemSelected={renderStatusSelected}
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                <div className="flex items-start mt-3">
+                    <div className="flex flex-1 mr-3">
+                        <InputField
+                            required={true}
+                            //@ts-expect-error: right type
+                            errors={errors}
+                            name={'en_name'}
+                            title={'Tên tiếng anh'}
+                            //@ts-expect-error: right type
+                            register={register}
+                        />
+                    </div>
+                    <div className="flex flex-1 flex-col">
+                        <InputField
+                            required={true}
+                            //@ts-expect-error: right type
+                            errors={errors}
+                            name={'sc_name'}
+                            title={'Tên khoa học'}
+                            //@ts-expect-error: right type
+                            register={register}
                         />
                     </div>
                 </div>
-            </div>
 
-            <div className="flex items-start mt-3">
-                <div className="flex flex-1 mr-3">
+                <div className="mt-3">
                     <InputField
                         required={true}
                         //@ts-expect-error: right type
                         errors={errors}
-                        name={'ENName'}
-                        title={'Tên tiếng anh'}
+                        name={'animal_infor'}
+                        title={'Mô tả'}
                         //@ts-expect-error: right type
                         register={register}
                     />
                 </div>
-                <div className="flex flex-1 flex-col">
-                    <InputField
-                        required={true}
-                        //@ts-expect-error: right type
-                        errors={errors}
-                        name={'SCName'}
-                        title={'Tên khoa học'}
-                        //@ts-expect-error: right type
-                        register={register}
-                    />
+
+                <div className="mt-3">
+                    {renderImage()}
                 </div>
             </div>
 
-            <div className="mt-3">
-                <InputField
-                    required={true}
-                    //@ts-expect-error: right type
-                    errors={errors}
-                    name={'animal_infor'}
-                    title={'Mô tả'}
-                    //@ts-expect-error: right type
-                    register={register}
-                />
-            </div>
-
-            <div className="mt-3">
-                <div className="flex flex-row items-center mb-3">
-                    <label className="text-[16px] font-poppins font-semibold">Hình ảnh</label>
-                    <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
-                </div>
-
-                {renderImage()}
+            <div className="flex items-center justify-end p-2 border-t border-solid border-slate-200 rounded-b">
+                <button
+                    className="bg-error text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-5"
+                    type="button"
+                    onClick={onClose}>
+                    Đóng
+                </button>
+                <button
+                    className="bg-primary text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-5"
+                    type="button"
+                    onClick={onSave}>
+                    Lưu
+                </button>
             </div>
 
             <Loading ref={refLoading} style="bg-transparent" />
