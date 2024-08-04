@@ -11,7 +11,10 @@ import { toast } from "react-toastify";
 import { EyeOutlined } from "@ant-design/icons";
 import ModalContribute from "../components/ModalContribute";
 import { styles } from "../styles/style";
-import { STATUS_CONTRIBUTE } from "../constants/AppConstant";
+import { ROUTE_RIGHT, STATUS_CONTRIBUTE } from "../constants/AppConstant";
+import { useAppSelector } from "../redux/store";
+import { checkRight } from "../utils/CommonUtil";
+import { unauthorized } from "../constants/images";
 
 interface IState {
     loading: boolean;
@@ -26,6 +29,10 @@ const Contribute = () => {
     })
 
     const refModal = useRef<IRefModalBasic>(null);
+
+    const auth = useAppSelector(st => st?.user?.auth);
+
+    const GET_CONTRIBUTELIST = checkRight(auth?.role || [], ROUTE_RIGHT.getContribute);
 
     useEffect(() => {
         loadData();
@@ -99,6 +106,15 @@ const Contribute = () => {
         if (state.loading) {
             return (
                 <Loading showProps={true} style="bg-transparent" />
+            )
+        }
+
+        if (!GET_CONTRIBUTELIST) {
+            return (
+                <div className="flex flex-1 flex-col items-center justify-center">
+                    <img src={unauthorized} alt="UnAuthorized" className="w-1/2 h-1/2 object-contain" />
+                    <span className={`${styles.textNoramal} text-[red]`}>Bạn không có quyền truy cập chức năng này !</span>
+                </div>
             )
         }
 

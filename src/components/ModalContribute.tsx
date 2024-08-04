@@ -312,14 +312,10 @@ const ModalContribute = (props: IProps) => {
                     control={control}
                     render={({ field }) => {
                         const { value } = field;
-
-                        if (!value) {
-                            return <></>
-                        }
-
                         return (
                             <button
-                                className="bg-primary text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
+                                disabled={!value}
+                                className={`${value ? 'bg-primary' : 'bg-[#E5E5E5]'} text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150`}
                                 type="button"
                                 onClick={onSave}>
                                 Chấp nhận

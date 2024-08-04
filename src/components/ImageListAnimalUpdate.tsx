@@ -7,6 +7,7 @@ import { UseFormGetValues, UseFormSetValue, useFieldArray } from "react-hook-for
 import { IAnimalImage, ImageLocal } from "../interface/AppInterface";
 
 interface ImageListAnimalUpdateProps {
+    readOnly?: boolean;
     name: string;
     control: any;
     setValue: UseFormSetValue<any>;
@@ -17,7 +18,7 @@ export interface ImageItem extends Partial<IAnimalImage>, Partial<ImageLocal> { 
 
 const ImageListAnimalUpdate = (props: ImageListAnimalUpdateProps) => {
 
-    const { control, name, getValues, setValue } = props;
+    const { control, name, getValues, setValue, readOnly } = props;
 
     const { fields, append, remove } = useFieldArray({
         control,
@@ -62,18 +63,21 @@ const ImageListAnimalUpdate = (props: ImageListAnimalUpdateProps) => {
     const renderHeader = () => {
         return (
             <div className="flex flex-row items-center justify-between mb-3">
-
                 <div className="flex flex-row items-center">
                     <label className="text-[16px] font-poppins font-semibold">Hình ảnh</label>
                     <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
                 </div>
 
-                <Upload
-                    multiple
-                    showUploadList={false}
-                    beforeUpload={beforeUpload}>
-                    <Button icon={<UploadOutlined />}>Upload</Button>
-                </Upload>
+                {
+                    !readOnly &&
+                    <Upload
+                        multiple
+                        showUploadList={false}
+                        beforeUpload={beforeUpload}>
+                        <Button icon={<UploadOutlined />}>Upload</Button>
+                    </Upload>
+                }
+
             </div>
         )
     }
@@ -88,7 +92,7 @@ const ImageListAnimalUpdate = (props: ImageListAnimalUpdateProps) => {
                     (fields as unknown as ImageItem[])?.map((img: ImageItem, index: number) => {
 
                         return (
-                            <div className="flex flex-row w-72 items-start mr-3" key={`${index}`}>
+                            <div className="flex flex-row items-start mr-3" key={`${index}`}>
                                 <div className="h-44 w-44 rounded-3xl mr-3">
                                     <img
                                         className="h-full w-full rounded-3xl"
@@ -96,11 +100,14 @@ const ImageListAnimalUpdate = (props: ImageListAnimalUpdateProps) => {
                                     />
 
                                 </div>
-                                <button
-                                    className="w-7 h-7 bg-red-600 rounded-md hover:opacity-90"
-                                    onClick={onDelete(index, img)}>
-                                    <DeleteFilled style={{ color: "white", fontSize: 13 }} />
-                                </button>
+                                {
+                                    !readOnly &&
+                                    <button
+                                        className="w-7 h-7 bg-red-600 rounded-md hover:opacity-90"
+                                        onClick={onDelete(index, img)}>
+                                        <DeleteFilled style={{ color: "white", fontSize: 13 }} />
+                                    </button>
+                                }
                             </div>
                         )
                     })

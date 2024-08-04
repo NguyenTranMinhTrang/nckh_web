@@ -13,7 +13,13 @@ export const STORAGE_KEY = {
 
 export const ROUTE_RIGHT = {
     report: '/report/getReport',
-    createAccount: '/admin/createOfficerAccount'
+    createAccount: '/admin/createOfficerAccount',
+    getListAnimal: '/redList/getAnimalRedList',
+    createAnimal: '/admin/addAnimalRedList',
+    updateAnimal: '/admin/updateAnimalType',
+    getContribute: '/contribute/getContributeById',
+    createContribute: '/contribute/createContribute',
+    getUserList: '/admin/getUsersList',
 }
 
 export const STATUS_REPORT = {

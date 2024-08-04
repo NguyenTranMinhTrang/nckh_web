@@ -14,6 +14,8 @@ import ModalCreateUser from "../components/ModalCreateUser";
 import { useAppSelector } from "../redux/store";
 import { checkRight } from "../utils/CommonUtil";
 import { ROUTE_RIGHT } from "../constants/AppConstant";
+import { unauthorized } from "../constants/images";
+import { styles } from "../styles/style";
 
 interface IState {
     loading: boolean;
@@ -27,9 +29,8 @@ const User = () => {
 
     const auth = useAppSelector(st => st?.user?.auth);
 
-    console.log('auth: ', auth);
-
     const CREATE_ACCOUNT = checkRight(auth?.role || [], ROUTE_RIGHT.createAccount);
+    const GET_USER_LIST = checkRight(auth?.role || [], ROUTE_RIGHT.getUserList);
 
     const refLoading = useRef<IRefLoading>(null);
     const refModal = useRef<IRefModalBasic>(null);
@@ -125,6 +126,15 @@ const User = () => {
         if (state.loading) {
             return (
                 <Loading showProps={true} style="bg-transparent" />
+            )
+        }
+
+        if (!GET_USER_LIST) {
+            return (
+                <div className="flex flex-1 flex-col items-center justify-center">
+                    <img src={unauthorized} alt="UnAuthorized" className="w-1/2 h-1/2 object-contain" />
+                    <span className={`${styles.textNoramal} text-[red]`}>Bạn không có quyền truy cập chức năng này !</span>
+                </div>
             )
         }
 

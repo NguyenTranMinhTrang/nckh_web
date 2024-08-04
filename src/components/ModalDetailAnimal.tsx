@@ -12,9 +12,11 @@ import IDDropdownField from "./IDDropdownField";
 import InputField from "./InputField";
 import ImageListAnimalUpdate, { ImageItem } from "./ImageListAnimalUpdate";
 import { RcFile } from "antd/es/upload";
+import { useAppSelector } from "../redux/store";
 
 interface IProps {
     id: number;
+    type?: 'detail' | 'edit';
     onRefresh: () => void;
     onClose: () => void;
 }
@@ -35,7 +37,7 @@ interface ValueForm extends Omit<IAnimal, 'animal_type' | 'conservation_status'>
 }
 
 const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref) => {
-    const { id, onClose } = props;
+    const { id, type = 'detail', onClose } = props;
     const axios = useAxiosPrivate();
     const refLoading = useRef<IRefLoading>(null);
     const [state, setState] = useImmer<IState>({
@@ -45,11 +47,15 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
         status: []
     })
 
+    const auth = useAppSelector(st => st?.user?.auth);
+
+    const readOnly = type === 'detail';
+
     const { control, handleSubmit, register, formState: { errors }, reset, getValues, setValue } = useForm<ValueForm>({
         mode: 'all',
         defaultValues: {
             ls_delete: []
-        }
+        },
     })
 
     useEffect(() => {
@@ -133,8 +139,8 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
 
     const renderImage = () => {
         return (
-
             <ImageListAnimalUpdate
+                readOnly={readOnly}
                 name="images"
                 control={control}
                 getValues={getValues}
@@ -173,6 +179,7 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                 <div className="flex items-start">
                     <div className="flex flex-1 mr-3">
                         <InputField
+                            disabled={readOnly}
                             required={true}
                             //@ts-expect-error: right type
                             errors={errors}
@@ -189,6 +196,7 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                                 <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
                             </div>
                             <IDDropdownField
+                                readOnly={readOnly}
                                 name="animal_type_id"
                                 control={control}
                                 keyLabel="type_name"
@@ -204,6 +212,7 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                                 <label className="text-[16px] font-poppins font-semibold text-[red] ml-1">*</label>
                             </div>
                             <IDDropdownField
+                                readOnly={readOnly}
                                 name="conservation_status_id"
                                 control={control}
                                 keyLabel="status_name"
@@ -218,17 +227,7 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                 <div className="flex items-start mt-3">
                     <div className="flex flex-1 mr-3">
                         <InputField
-                            required={true}
-                            //@ts-expect-error: right type
-                            errors={errors}
-                            name={'en_name'}
-                            title={'Tên tiếng anh'}
-                            //@ts-expect-error: right type
-                            register={register}
-                        />
-                    </div>
-                    <div className="flex flex-1 flex-col">
-                        <InputField
+                            disabled={readOnly}
                             required={true}
                             //@ts-expect-error: right type
                             errors={errors}
@@ -238,10 +237,47 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                             register={register}
                         />
                     </div>
+                    <div className="flex flex-1">
+                        <div className="flex-1">
+                            <InputField
+                                disabled={readOnly}
+                                required={true}
+                                //@ts-expect-error: right type
+                                errors={errors}
+                                name={'en_name'}
+                                title={'Tên tiếng anh'}
+                                //@ts-expect-error: right type
+                                register={register}
+                            />
+                        </div>
+
+                        {
+                            auth?.role_id === 1 &&
+                            <div className="flex-1 ml-3">
+                                <InputField
+                                    disabled={readOnly}
+                                    required={true}
+                                    //@ts-expect-error: right type
+                                    errors={errors}
+                                    name={'predict_id'}
+                                    title={'Thứ tự dự đoán'}
+                                    //@ts-expect-error: right type
+                                    register={register}
+                                    validate={(value: string) => {
+                                        if (/^[0-9\b]+$/.test(value)) {
+                                            return undefined;
+                                        }
+                                        return "Vui lòng nhập một số nguyên !";
+                                    }}
+                                />
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div className="mt-3">
                     <InputField
+                        disabled={readOnly}
                         required={true}
                         //@ts-expect-error: right type
                         errors={errors}
@@ -264,12 +300,17 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                     onClick={onClose}>
                     Đóng
                 </button>
-                <button
-                    className="bg-primary text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-5"
-                    type="button"
-                    onClick={onSave}>
-                    Lưu
-                </button>
+
+                {
+                    !readOnly &&
+                    <button
+                        className="bg-primary text-white active:opacity-90 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mb-1 ease-linear transition-all duration-150 mr-5"
+                        type="button"
+                        onClick={onSave}>
+                        Lưu
+                    </button>
+                }
+
             </div>
 
             <Loading ref={refLoading} style="bg-transparent" />
