@@ -103,9 +103,7 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
     }
 
     const onSubmit: SubmitHandler<ValueForm> = async (data: ValueForm) => {
-        console.log('onSubmit: ', data);
-
-        const { images, ...resValue } = data;
+        const { images, ls_delete, ...resValue } = data;
 
         const formData = new FormData();
         for (const [key, value] of Object.entries(resValue)) {
@@ -117,6 +115,10 @@ const ModalDetailAnimal = forwardRef<IRefModalDetailAnimal, IProps>((props, ref)
                 formData.append('images', val?.file as RcFile);
             }
         })
+
+        if (ls_delete && ls_delete.length > 0) {
+            formData.append('images_delete', ls_delete.join('-'));
+        }
 
         refLoading?.current?.onOpen();
 
