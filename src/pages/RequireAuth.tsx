@@ -6,7 +6,7 @@ import { setUser } from "../redux/reducers/userSlice";
 import { useDispatch } from "react-redux";
 import { useAppSelector } from "../redux/store";
 import { STORAGE_KEY } from "../constants/AppConstant";
-import { toast } from "react-toastify";
+import NotSupport from "./NotSupport";
 
 interface IProps {
     allowRight: string;
@@ -14,7 +14,10 @@ interface IProps {
 
 const RequireAuth = (props: IProps) => {
     const { allowRight } = props;
+
     const [loading, setLoading] = useState(true);
+    const [isSupport, setIsSupport] = useState(true);
+
     const dispatch = useDispatch();
     const userData = useAppSelector(state => state.user.auth);
     const location = useLocation();
@@ -25,14 +28,14 @@ const RequireAuth = (props: IProps) => {
 
     useEffect(() => {
         window.addEventListener("resize", handleResize)
-
         return () => window.removeEventListener('resize', handleResize);
-
     }, []);
 
     const handleResize = () => {
-        if (window.innerWidth < 1024) {
-            toast.error("Website không hổ trợ xem trên màn hình dưới 1024");
+        if (window.innerWidth < 1024 && isSupport) {
+            setIsSupport(false)
+        } else {
+            setIsSupport(true)
         }
     }
 
@@ -55,6 +58,12 @@ const RequireAuth = (props: IProps) => {
     if (loading) {
         return (
             <Loading showProps={true} />
+        )
+    }
+
+    if (!isSupport) {
+        return (
+            <NotSupport />
         )
     }
 

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../components/InputField";
 import { styles } from "../styles/style";
@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setUser } from "../redux/reducers/userSlice";
 import { useNavigate } from "react-router-dom";
 import { STORAGE_KEY } from "../constants/AppConstant";
+import { notSupport } from "../constants/images";
 
 interface IFormValues {
     userName: string;
@@ -22,6 +23,9 @@ const Login = () => {
     const axios = useAxiosPrivate();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const [isSupport, setIsSupport] = useState(true);
+
     const { register, handleSubmit, formState: { errors } } = useForm<IFormValues>({
         mode: 'all',
         defaultValues: {
@@ -29,6 +33,19 @@ const Login = () => {
             password: ''
         },
     });
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize)
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const handleResize = () => {
+        if (window.innerWidth < 1024 && isSupport) {
+            setIsSupport(false)
+        } else {
+            setIsSupport(true)
+        }
+    }
 
     const loadingRef = useRef<IRefLoading>(null);
 
@@ -52,9 +69,19 @@ const Login = () => {
         loadingRef?.current?.onClose();
     }
 
-    return (
-        <div className="h-screen bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
-            <div className="bg-white w-1/3 rounded-xl p-7">
+    const renderBody = () => {
+        if (!isSupport) {
+            return (
+                <div className="flex flex-1 flex-col h-96 items-center justify-center">
+                    <img src={notSupport} className="h-52 w-52 mb-4" />
+                    <span className={`${styles.textNoramal} text-center text-[red]`}>Không hổ trợ xem trên màn hình bé hơn 1024px</span>
+
+                </div>
+            )
+        }
+
+        return (
+            <div>
                 <h1 className={`text-4xl font-extrabold text-primary text-center`}>Đăng nhập</h1>
                 <div className="my-4">
                     <form>
@@ -88,6 +115,14 @@ const Login = () => {
                         </div>
                     </form>
                 </div>
+            </div>
+        )
+    }
+
+    return (
+        <div className="h-screen bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+            <div className="bg-white w-1/3 rounded-xl p-7">
+                {renderBody()}
             </div>
         </div>
     )

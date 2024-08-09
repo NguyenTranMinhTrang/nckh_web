@@ -5,6 +5,7 @@ import eye from './eye.svg';
 import eyeSlash from './eye-slash.svg';
 import unauthorized from './unauthorized.png';
 import notfound from './notfound.png';
+import notSupport from './signal.png';
 
 export {
     loginBackground,
@@ -13,5 +14,6 @@ export {
     noResult,
     unauthorized,
     notfound,
-    logo_bk
+    logo_bk,
+    notSupport
 }
