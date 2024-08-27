@@ -82,7 +82,7 @@ const Login = () => {
 
         return (
             <div>
-                <h1 className={`text-4xl font-extrabold text-primary text-center`}>Đăng nhập</h1>
+                <h1 className={`text-4xl font-extrabold text-primary text-center`}>Welcome back</h1>
                 <div className="my-4">
                     <form>
                         <InputField
