@@ -39,11 +39,24 @@ const Login = () => {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    useEffect(() => {
+        window.addEventListener("load", handleCheckLogin);
+        return () => window.addEventListener("load", handleCheckLogin);
+    });
+
     const handleResize = () => {
         if (window.innerWidth < 1024 && isSupport) {
             setIsSupport(false)
         } else {
             setIsSupport(true)
+        }
+    }
+
+    const handleCheckLogin = () => {
+        const userInfor = localStorage.getItem(STORAGE_KEY.USER_DATA);
+        console.log("Kha test: ", userInfor != null);
+        if(userInfor != null) {
+            navigate("/");
         }
     }
 
