@@ -1,4 +1,5 @@
 import React from "react";
+// import { Route, Routes, HashRouter } from "react-router-dom";
 import { Route, Routes } from "react-router-dom";
 import Login from "./pages/Login";
 import RequireAuth from "./pages/RequireAuth";
