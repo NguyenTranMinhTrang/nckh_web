@@ -91,7 +91,7 @@ const Login = () => {
             return (
                 <div className="flex flex-1 flex-col h-96 items-center justify-center">
                     <img src={notSupport} className="h-52 w-52 mb-4" />
-                    <span className={`${styles.textNoramal} text-center text-[red]`}>Không hổ trợ xem trên màn hình bé hơn 1024px</span>
+                    <span className={`${styles.textNoramal} text-center text-[red]`}>Không hỗ trợ xem trên màn hình bé hơn 1024px</span>
 
                 </div>
             )
