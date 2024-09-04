@@ -27,7 +27,11 @@ const RequireAuth = (props: IProps) => {
     }, []);
 
     useEffect(() => {
-        window.addEventListener("resize", handleResize)
+        return handleResize;
+    });
+
+    useEffect(() => {
+        window.addEventListener("resize", handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
