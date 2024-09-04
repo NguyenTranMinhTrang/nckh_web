@@ -19,23 +19,23 @@ const AppNavigation = () => {
             {/* Private path */}
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
-                <Route path="#/" element={<HomePage />} />
+                <Route path="/" element={<HomePage />} />
             </Route>
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
-                <Route path="#/user" element={<User />} />
+                <Route path="/user" element={<User />} />
             </Route>
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
-                <Route path="#/report" element={<Report />} />
+                <Route path="/report" element={<Report />} />
             </Route>
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
-                <Route path="#/animals" element={<Animal />} />
+                <Route path="/animals" element={<Animal />} />
             </Route>
 
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
-                <Route path="#/contribute" element={<Contribute />} />
+                <Route path="/contribute" element={<Contribute />} />
             </Route>
         </Routes>
     )
