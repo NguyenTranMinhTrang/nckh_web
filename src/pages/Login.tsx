@@ -44,6 +44,11 @@ const Login = () => {
         return () => window.addEventListener("load", handleCheckLogin);
     });
 
+    useEffect(() => {
+        window.addEventListener("load", handleResize);
+        return () => window.addEventListener("load", handleResize);
+    });
+
     const handleResize = () => {
         if (window.innerWidth < 1024 && isSupport) {
             setIsSupport(false)
@@ -54,7 +59,6 @@ const Login = () => {
 
     const handleCheckLogin = () => {
         const userInfor = localStorage.getItem(STORAGE_KEY.USER_DATA);
-        console.log("Kha test: ", userInfor != null);
         if(userInfor != null) {
             navigate("/");
         }
