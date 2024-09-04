@@ -10,6 +10,7 @@ import HomePage from "./pages/HomePage";
 import Animal from "./pages/Animal";
 import Contribute from "./pages/Contribute";
 import User from "./pages/User";
+import NotFound from "./pages/NotFound";
 
 const AppNavigation = () => {
     return (
@@ -38,6 +39,7 @@ const AppNavigation = () => {
             <Route element={<RequireAuth allowRight={ROUTE_RIGHT.report} />}>
                 <Route path="/contribute" element={<Contribute />} />
             </Route>
+            <Route path="*" element={<NotFound />} />
         </Routes>
     )
 };
