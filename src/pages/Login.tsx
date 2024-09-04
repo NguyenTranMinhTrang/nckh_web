@@ -41,12 +41,12 @@ const Login = () => {
 
     useEffect(() => {
         window.addEventListener("load", handleCheckLogin);
-        return () => window.addEventListener("load", handleCheckLogin);
+        return () => window.removeEventListener("load", handleCheckLogin);
     });
 
     useEffect(() => {
         window.addEventListener("load", handleResize);
-        return () => window.addEventListener("load", handleResize);
+        return () => window.removeEventListener("load", handleResize);
     });
 
     const handleResize = () => {
