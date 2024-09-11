@@ -4,7 +4,9 @@ export const COLOR_PRIMARY = '#45d279';
 export const COLOR_ERROR = '#EF4444';
 export const COLOR_BASIC = '#3D75FA';
 
-export const KEY_API_GOOGLE_MAP = 'AIzaSyDdyfzO1qNJhud6RAfpQ8wCqVqIm9qoC80';
+// export const KEY_API_GOOGLE_MAP = 'AIzaSyDdyfzO1qNJhud6RAfpQ8wCqVqIm9qoC80';
+export const KEY_API_GOOGLE_MAP = 'AIzaSyAAhAkc2RNUBNQHpP8rEHLiXtfVJyewbR8';
+
 
 export const STORAGE_KEY = {
     USER_DATA: 'userDate',
